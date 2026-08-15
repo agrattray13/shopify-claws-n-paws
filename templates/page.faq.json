@@ -1,0 +1,20 @@
+{
+  "sections": {
+    "main": {
+      "type": "pc-faq",
+      "blocks": {
+        "q1":{"type":"faq","settings":{"question":"How long does shipping take?","answer":"<p>Shipping times vary by destination and product. Check the shipping details shown at checkout and our shipping policy for current information.</p>"}},
+        "q2":{"type":"faq","settings":{"question":"How can I track my order?","answer":"<p>When tracking is available, you’ll receive shipment information using the contact details provided with your order.</p>"}},
+        "q3":{"type":"faq","settings":{"question":"Can I change or cancel an order?","answer":"<p>Contact us as quickly as possible. We’ll help when an order has not already entered fulfillment.</p>"}},
+        "q4":{"type":"faq","settings":{"question":"What is your return policy?","answer":"<p>Return eligibility and timing are described in the store’s current refund policy. Please review that policy before starting a return.</p>"}},
+        "q5":{"type":"faq","settings":{"question":"What if my item arrives damaged?","answer":"<p>Contact customer support with your order information and photos of the issue so we can review what happened.</p>"}},
+        "q6":{"type":"faq","settings":{"question":"Do you sell products for both dogs and cats?","answer":"<p>Yes. Paws & Claws is designed around everyday favorites and essentials for both dogs and cats.</p>"}},
+        "q7":{"type":"faq","settings":{"question":"How do I know which size to order?","answer":"<p>Use the size information shown on the product page when available and measure your pet before ordering wearable items.</p>"}},
+        "q8":{"type":"faq","settings":{"question":"Do you offer discounts or promotions?","answer":"<p>Promotions may be offered from time to time. Join the Paws & Claws newsletter for store updates and special offers.</p>"}}
+      },
+      "block_order":["q1","q2","q3","q4","q5","q6","q7","q8"],
+      "settings":{}
+    }
+  },
+  "order":["main"]
+}

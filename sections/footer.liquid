@@ -1,0 +1,139 @@
+<footer class="pc-footer">
+  <section class="pc-footer__statement">
+    <div class="pc-footer__statement-inner">
+      <div class="pc-footer__mark" aria-hidden="true">P&C</div>
+      <div>
+        <p>For pets. For family.</p>
+        <h2>More tail wags.<br><em>More happy homes.</em></h2>
+        <a href="{{ routes.all_products_collection_url }}">Shop the whole store <span>→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <div class="pc-footer__main">
+    <div class="pc-footer__brand">
+      <a href="{{ routes.root_url }}" class="pc-footer__logo">
+        {% if section.settings.logo != blank %}
+          {{ section.settings.logo | image_url: width: 520 | image_tag: loading: 'lazy', widths: '220,360,520', sizes: '240px', alt: shop.name }}
+        {% else %}
+          <strong>PAWS <span>&</span> CLAWS</strong>
+          <small>Pet supplies & everyday favorites</small>
+        {% endif %}
+      </a>
+      <p>{{ section.settings.brand_text }}</p>
+
+      {% if section.settings.show_contact %}
+        <div class="pc-footer__contact">
+          <span>Questions or assistance?</span>
+          <a href="mailto:arthurscreatives@gmail.com">arthurscreatives@gmail.com</a>
+          <a href="tel:+18137557590">813-755-7590</a>
+          <a href="tel:+18133147561">813-314-7561</a>
+          <a href="https://arthurscreative.tech/" target="_blank" rel="noopener">arthurscreative.tech</a>
+        </div>
+      {% endif %}
+    </div>
+
+    {% if section.settings.shop_menu != blank %}
+      <nav class="pc-footer__column" aria-label="Shop links">
+        <h3>{{ section.settings.shop_heading | escape }}</h3>
+        {% for link in section.settings.shop_menu.links %}<a href="{{ link.url }}">{{ link.title | escape }}</a>{% endfor %}
+      </nav>
+    {% endif %}
+
+    {% if section.settings.care_menu != blank %}
+      <nav class="pc-footer__column" aria-label="Customer care links">
+        <h3>{{ section.settings.care_heading | escape }}</h3>
+        {% for link in section.settings.care_menu.links %}<a href="{{ link.url }}">{{ link.title | escape }}</a>{% endfor %}
+      </nav>
+    {% endif %}
+
+    <nav class="pc-footer__column" aria-label="Information links">
+      <h3>{{ section.settings.info_heading | escape }}</h3>
+      {% if section.settings.info_menu != blank %}
+        {% for link in section.settings.info_menu.links %}<a href="{{ link.url }}">{{ link.title | escape }}</a>{% endfor %}
+      {% endif %}
+      {% if shop.shipping_policy != blank %}<a href="{{ shop.shipping_policy.url }}">Shipping policy</a>{% endif %}
+      {% if shop.refund_policy != blank %}<a href="{{ shop.refund_policy.url }}">Returns & refunds</a>{% endif %}
+      {% if shop.privacy_policy != blank %}<a href="{{ shop.privacy_policy.url }}">Privacy policy</a>{% endif %}
+      {% if shop.terms_of_service != blank %}<a href="{{ shop.terms_of_service.url }}">Terms of service</a>{% endif %}
+      <a href="{{ routes.search_url }}">Search</a>
+      <a href="{{ routes.cart_url }}">Shopping cart</a>
+      {% if shop.customer_accounts_enabled %}<a href="{{ routes.account_url }}">My account</a>{% endif %}
+    </nav>
+
+    <div class="pc-footer__newsletter">
+      <h3>Join the pack</h3>
+      <p>New finds, pet-parent favorites, and special offers—without the clutter.</p>
+      {% form 'customer', class: 'pc-footer__newsletter-form' %}
+        <input type="hidden" name="contact[tags]" value="newsletter,paws-and-claws">
+        <label class="visually-hidden" for="pc-footer-email-{{ section.id }}">Email address</label>
+        <div class="pc-footer__email-row">
+          <input id="pc-footer-email-{{ section.id }}" type="email" name="contact[email]" value="{{ form.email }}" placeholder="Email address" autocorrect="off" autocapitalize="off" autocomplete="email" required>
+          <button type="submit" aria-label="Join newsletter">→</button>
+        </div>
+        {% if form.posted_successfully? %}<p class="pc-footer__form-message" role="status">Welcome to the pack.</p>{% endif %}
+        {% if form.errors %}<div class="pc-footer__form-message" role="alert">{{ form.errors | default_errors }}</div>{% endif %}
+      {% endform %}
+
+      {% assign has_social = false %}
+      {% if section.settings.facebook_url != blank or section.settings.instagram_url != blank or section.settings.tiktok_url != blank or section.settings.pinterest_url != blank %}{% assign has_social = true %}{% endif %}
+      {% if has_social %}
+        <div class="pc-footer__socials" aria-label="Social media">
+          {% if section.settings.facebook_url != blank %}<a href="{{ section.settings.facebook_url }}" target="_blank" rel="noopener">Facebook</a>{% endif %}
+          {% if section.settings.instagram_url != blank %}<a href="{{ section.settings.instagram_url }}" target="_blank" rel="noopener">Instagram</a>{% endif %}
+          {% if section.settings.tiktok_url != blank %}<a href="{{ section.settings.tiktok_url }}" target="_blank" rel="noopener">TikTok</a>{% endif %}
+          {% if section.settings.pinterest_url != blank %}<a href="{{ section.settings.pinterest_url }}" target="_blank" rel="noopener">Pinterest</a>{% endif %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="pc-footer__giant" aria-hidden="true">PAWS & CLAWS</div>
+
+  <div class="pc-footer__ticker" aria-hidden="true">
+    <div class="pc-footer__ticker-track">
+      {% for i in (1..2) %}
+        <span>HAPPY PETS</span><b>◆</b><span>HAPPY HOMES</span><b>◆</b><span>PAWS & CLAWS</span><b>◆</b><span>PLAY MORE</span><b>◆</b><span>LOVE MORE</span><b>◆</b>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="pc-footer__bottom">
+    <span>© {{ 'now' | date: '%Y' }} {{ shop.name | escape }}. All rights reserved.</span>
+    {% if section.settings.show_payment_icons and shop.enabled_payment_types.size > 0 %}
+      <div class="pc-footer__payments" aria-label="Accepted payment methods">
+        {% for type in shop.enabled_payment_types %}{{ type | payment_type_svg_tag: class: 'pc-footer__payment-icon' }}{% endfor %}
+      </div>
+    {% endif %}
+    <span>Built by <a href="https://arthurscreative.tech/" target="_blank" rel="noopener">Arthur's Creatives</a></span>
+  </div>
+</footer>
+
+{% stylesheet %}
+.pc-footer{background:#101b2c;color:#f7f3ea;overflow:hidden}.pc-footer *{box-sizing:border-box}.pc-footer a{color:inherit}.pc-footer__statement{background:linear-gradient(135deg,#162238,#213650 72%,#294035)}.pc-footer__statement-inner{position:relative;width:min(1480px,calc(100% - 64px));min-height:520px;margin:0 auto;display:grid;grid-template-columns:220px 1fr;gap:70px;align-items:center}.pc-footer__mark{width:190px;height:190px;border:1px solid rgba(212,166,90,.75);border-radius:50%;display:grid;place-items:center;color:#d4a65a;font-family:Georgia,serif;font-size:46px}.pc-footer__statement p{margin:0 0 18px;color:#d4a65a;font-size:10px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.pc-footer__statement h2{margin:0;font-size:clamp(58px,7vw,106px);line-height:.88;letter-spacing:-.065em;font-weight:700}.pc-footer__statement h2 em{color:#d4a65a;font-family:Georgia,serif;font-weight:400}.pc-footer__statement a{display:inline-flex;align-items:center;gap:14px;margin-top:28px;padding:14px 21px;border-radius:999px;background:#f7f3ea;color:#162238;text-decoration:none;font-size:10px;font-weight:900;letter-spacing:.07em;text-transform:uppercase}.pc-footer__main{width:min(1480px,calc(100% - 64px));margin:0 auto;padding:86px 0 78px;display:grid;grid-template-columns:1.3fr .72fr .72fr .82fr 1.15fr;gap:48px}.pc-footer__logo{display:inline-flex;flex-direction:column;text-decoration:none}.pc-footer__logo img{width:min(260px,100%);height:auto}.pc-footer__logo strong{font-size:31px;letter-spacing:-.04em}.pc-footer__logo strong span{color:#d4a65a}.pc-footer__logo small{margin-top:3px;color:#d4a65a;font-size:8px;font-weight:850;letter-spacing:.15em;text-transform:uppercase}.pc-footer__brand>p{max-width:350px;margin:22px 0 0;color:rgba(247,243,234,.57);font-size:12px;line-height:1.75}.pc-footer__contact{margin-top:28px;display:flex;flex-direction:column;align-items:flex-start;gap:8px}.pc-footer__contact span,.pc-footer__column h3,.pc-footer__newsletter h3{margin:0 0 14px;color:#d4a65a;font-size:9px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}.pc-footer__contact a,.pc-footer__column a{color:rgba(247,243,234,.62);text-decoration:none;font-size:11px;line-height:1.6;transition:color .2s,transform .2s}.pc-footer__contact a:hover,.pc-footer__column a:hover{color:#fff;transform:translateX(3px)}.pc-footer__column{display:flex;flex-direction:column;align-items:flex-start;gap:11px}.pc-footer__newsletter p{margin:0;color:rgba(247,243,234,.58);font-size:11px;line-height:1.65}.pc-footer__newsletter-form{margin-top:18px}.pc-footer__email-row{height:50px;display:grid;grid-template-columns:1fr 50px;border:1px solid rgba(247,243,234,.22);border-radius:999px;overflow:hidden}.pc-footer__email-row input{min-width:0;border:0;outline:0;padding:0 16px;background:transparent;color:#fff;font:inherit;font-size:11px}.pc-footer__email-row input::placeholder{color:rgba(247,243,234,.45)}.pc-footer__email-row button{border:0;background:#d4a65a;color:#162238;font-size:19px;cursor:pointer}.pc-footer__form-message{margin-top:9px!important;color:#f7f3ea!important;font-size:10px!important}.pc-footer__socials{margin-top:20px;display:flex;flex-wrap:wrap;gap:12px}.pc-footer__socials a{color:#d4a65a;text-decoration:none;font-size:9px;font-weight:850;text-transform:uppercase;letter-spacing:.06em}.pc-footer__giant{width:min(1540px,calc(100% - 40px));margin:20px auto 52px;color:rgba(247,243,234,.045);font-size:clamp(80px,12.5vw,205px);font-weight:900;line-height:.72;letter-spacing:-.072em;text-align:center;white-space:nowrap}.pc-footer__ticker{overflow:hidden;border-top:1px solid rgba(212,166,90,.22);border-bottom:1px solid rgba(212,166,90,.22);background:#162238}.pc-footer__ticker-track{width:max-content;min-height:58px;display:flex;align-items:center;gap:28px;white-space:nowrap;animation:pcFooterTicker 32s linear infinite;color:rgba(247,243,234,.66);font-size:9px;font-weight:850;letter-spacing:.16em}.pc-footer__ticker-track b{color:#d4a65a;font-size:6px}.pc-footer__bottom{width:min(1480px,calc(100% - 64px));min-height:84px;margin:0 auto;display:grid;grid-template-columns:1fr auto 1fr;gap:26px;align-items:center;color:rgba(247,243,234,.4);font-size:8px;letter-spacing:.04em}.pc-footer__bottom>span:last-child{text-align:right}.pc-footer__bottom a{color:#d4a65a;text-decoration:none}.pc-footer__payments{display:flex;align-items:center;justify-content:center;gap:5px;flex-wrap:wrap}.pc-footer__payment-icon{width:36px;height:auto}.visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}@keyframes pcFooterTicker{to{transform:translateX(-50%)}}
+@media(max-width:1100px){.pc-footer__main{grid-template-columns:1.3fr repeat(2,1fr)}.pc-footer__newsletter{grid-column:2 / -1}}
+@media(max-width:749px){.pc-footer__statement-inner{width:calc(100% - 38px);min-height:680px;grid-template-columns:1fr;gap:40px;align-content:center}.pc-footer__mark{width:110px;height:110px;font-size:28px}.pc-footer__statement h2{font-size:clamp(54px,16vw,78px)}.pc-footer__main{width:calc(100% - 38px);grid-template-columns:1fr;gap:0;padding:64px 0 50px}.pc-footer__brand{padding-bottom:36px}.pc-footer__column,.pc-footer__newsletter{grid-column:auto;padding:26px 0;border-top:1px solid rgba(247,243,234,.1)}.pc-footer__giant{font-size:21vw;margin-bottom:42px}.pc-footer__ticker-track{min-height:54px;animation-duration:25s}.pc-footer__bottom{width:calc(100% - 38px);grid-template-columns:1fr;gap:12px;padding:24px 0;text-align:center}.pc-footer__bottom>span:last-child{text-align:center}.pc-footer__payments{order:3}}
+@media(prefers-reduced-motion:reduce){.pc-footer__ticker-track{animation:none}}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name":"Paws & Claws footer",
+  "settings":[
+    {"type":"image_picker","id":"logo","label":"Footer logo"},
+    {"type":"richtext","id":"brand_text","label":"Brand description","default":"<p>Everything your pet needs for happier days, comfortable nights, and more adventures together.</p>"},
+    {"type":"checkbox","id":"show_contact","label":"Show Arthur's Creatives contact details","default":true},
+    {"type":"text","id":"shop_heading","label":"Shop heading","default":"Shop"},
+    {"type":"link_list","id":"shop_menu","label":"Shop menu"},
+    {"type":"text","id":"care_heading","label":"Customer care heading","default":"Customer care"},
+    {"type":"link_list","id":"care_menu","label":"Customer care menu"},
+    {"type":"text","id":"info_heading","label":"Information heading","default":"Information"},
+    {"type":"link_list","id":"info_menu","label":"Information menu"},
+    {"type":"url","id":"facebook_url","label":"Facebook URL"},
+    {"type":"url","id":"instagram_url","label":"Instagram URL"},
+    {"type":"url","id":"tiktok_url","label":"TikTok URL"},
+    {"type":"url","id":"pinterest_url","label":"Pinterest URL"},
+    {"type":"checkbox","id":"show_payment_icons","label":"Show payment icons","default":true}
+  ]
+}
+{% endschema %}

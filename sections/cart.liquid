@@ -1,0 +1,99 @@
+<section class="pc-cart-page">
+  <div class="pc-cart-page__inner">
+    <header class="pc-cart-page__head">
+      <p>Your Paws & Claws bag</p>
+      <h1>{% if cart.item_count == 0 %}Your cart is waiting.{% else %}Ready for checkout.{% endif %}</h1>
+      {% unless cart.item_count == 0 %}<span>{{ cart.item_count }} {% if cart.item_count == 1 %}item{% else %}items{% endif %}</span>{% endunless %}
+    </header>
+
+    {% if cart.item_count == 0 %}
+      <div class="pc-cart-page__empty">
+        <div class="pc-cart-page__paw" aria-hidden="true">♡</div>
+        <h2>Find their next favorite.</h2>
+        <p>Toys, comfort, everyday essentials, and plenty of reasons for tail wags.</p>
+        <a href="{{ routes.all_products_collection_url }}">Shop all products</a>
+      </div>
+    {% else %}
+      <form action="{{ routes.cart_url }}" method="post" class="pc-cart-page__form">
+        <div class="pc-cart-page__grid">
+          <div class="pc-cart-page__items">
+            {% for item in cart.items %}
+              <article class="pc-cart-line">
+                <a class="pc-cart-line__media" href="{{ item.url }}">
+                  {% if item.image != blank %}
+                    {{ item.image | image_url: width: 420 | image_tag: loading: 'lazy', widths: '180,260,420', sizes: '150px', alt: item.image.alt }}
+                  {% endif %}
+                </a>
+                <div class="pc-cart-line__info">
+                  {% if item.product.vendor != blank %}<span class="pc-cart-line__vendor">{{ item.product.vendor | escape }}</span>{% endif %}
+                  <a class="pc-cart-line__title" href="{{ item.url }}">{{ item.product.title | escape }}</a>
+                  {% unless item.product.has_only_default_variant %}<p>{{ item.variant.title | escape }}</p>{% endunless %}
+                  {% unless item.properties == empty %}
+                    <dl class="pc-cart-line__properties">
+                      {% for property in item.properties %}
+                        {% assign first_char = property.first | slice: 0 %}
+                        {% if property.last != blank and first_char != '_' %}
+                          <div><dt>{{ property.first | escape }}:</dt><dd>{{ property.last | escape }}</dd></div>
+                        {% endif %}
+                      {% endfor %}
+                    </dl>
+                  {% endunless %}
+                  <div class="pc-cart-line__bottom">
+                    <div class="pc-cart-page-qty">
+                      <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&quantity={{ item.quantity | minus: 1 }}" aria-label="Decrease {{ item.product.title | escape }} quantity">−</a>
+                      <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" aria-label="Quantity for {{ item.product.title | escape }}">
+                      <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&quantity={{ item.quantity | plus: 1 }}" aria-label="Increase {{ item.product.title | escape }} quantity">+</a>
+                    </div>
+                    <a class="pc-cart-line__remove" href="{{ item.url_to_remove }}">Remove</a>
+                  </div>
+                </div>
+                <div class="pc-cart-line__price">
+                  {% if item.original_line_price != item.final_line_price %}<s>{{ item.original_line_price | money }}</s>{% endif %}
+                  <strong>{{ item.final_line_price | money }}</strong>
+                </div>
+              </article>
+            {% endfor %}
+
+            <div class="pc-cart-page__update-row">
+              <a href="{{ routes.all_products_collection_url }}">← Continue shopping</a>
+              <button type="submit" name="update">Update cart</button>
+            </div>
+          </div>
+
+          <aside class="pc-cart-summary">
+            <p class="pc-cart-summary__eyebrow">Order summary</p>
+            <div class="pc-cart-summary__row"><span>Subtotal</span><strong>{{ cart.total_price | money_with_currency }}</strong></div>
+            {% if cart.cart_level_discount_applications.size > 0 %}
+              {% for discount in cart.cart_level_discount_applications %}
+                <div class="pc-cart-summary__row pc-cart-summary__discount"><span>{{ discount.title | escape }}</span><strong>−{{ discount.total_allocated_amount | money }}</strong></div>
+              {% endfor %}
+            {% endif %}
+            <p class="pc-cart-summary__note">Taxes and shipping are calculated at checkout.</p>
+
+            {% if section.settings.show_cart_note %}
+              <label class="pc-cart-summary__label" for="pc-cart-note-{{ section.id }}">Order note</label>
+              <textarea id="pc-cart-note-{{ section.id }}" name="note" rows="3" placeholder="Special instructions for your order">{{ cart.note }}</textarea>
+            {% endif %}
+
+            <button class="pc-cart-summary__checkout" type="submit" name="checkout">Secure checkout</button>
+            {% if additional_checkout_buttons %}<div class="pc-cart-summary__accelerated">{{ content_for_additional_checkout_buttons }}</div>{% endif %}
+            <div class="pc-cart-summary__trust"><span>✓ Secure Shopify checkout</span><span>↺ Customer support</span></div>
+          </aside>
+        </div>
+      </form>
+    {% endif %}
+  </div>
+</section>
+
+{% stylesheet %}
+.pc-cart-page{background:#f7f3ea;color:#162238;min-height:70vh}.pc-cart-page *{box-sizing:border-box}.pc-cart-page__inner{width:min(1460px,calc(100% - 64px));margin:0 auto;padding:76px 0 110px}.pc-cart-page__head{position:relative;padding-bottom:38px;border-bottom:1px solid rgba(22,34,56,.12)}.pc-cart-page__head p{margin:0 0 10px;color:#7e9b81;font-size:10px;font-weight:900;letter-spacing:.15em;text-transform:uppercase}.pc-cart-page__head h1{margin:0;font-size:clamp(54px,7vw,100px);line-height:.9;letter-spacing:-.065em}.pc-cart-page__head>span{position:absolute;right:0;bottom:42px;color:#717b87;font-size:12px}.pc-cart-page__empty{max-width:740px;margin:70px auto 0;padding:70px 36px;text-align:center;border-radius:34px;background:#fff}.pc-cart-page__paw{width:72px;height:72px;margin:0 auto 22px;border-radius:50%;display:grid;place-items:center;background:#e8ede4;color:#5f7b68;font-size:30px}.pc-cart-page__empty h2{margin:0;font-size:42px;letter-spacing:-.04em}.pc-cart-page__empty p{max-width:520px;margin:14px auto;color:#697482;line-height:1.7}.pc-cart-page__empty a{display:inline-flex;margin-top:18px;padding:15px 24px;border-radius:999px;background:#162238;color:#fff;text-decoration:none;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.06em}.pc-cart-page__grid{display:grid;grid-template-columns:1fr 400px;gap:50px;padding-top:42px}.pc-cart-page__items{min-width:0}.pc-cart-line{display:grid;grid-template-columns:150px 1fr auto;gap:22px;padding:20px 0;border-bottom:1px solid rgba(22,34,56,.12)}.pc-cart-line__media{height:150px;border-radius:20px;overflow:hidden;background:#eee7dc}.pc-cart-line__media img{width:100%;height:100%;object-fit:cover}.pc-cart-line__info{min-width:0;padding:7px 0}.pc-cart-line__vendor{display:block;margin-bottom:5px;color:#7e9b81;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.1em}.pc-cart-line__title{color:#162238;text-decoration:none;font-size:18px;font-weight:850}.pc-cart-line__info p{margin:6px 0;color:#75808c;font-size:11px}.pc-cart-line__properties{margin:6px 0;display:grid;gap:2px;color:#75808c;font-size:10px}.pc-cart-line__properties div{display:flex;gap:4px}.pc-cart-line__properties dt,.pc-cart-line__properties dd{margin:0}.pc-cart-line__bottom{margin-top:20px;display:flex;align-items:center;gap:18px}.pc-cart-page-qty{width:120px;height:40px;display:grid;grid-template-columns:36px 1fr 36px;align-items:center;border:1px solid rgba(22,34,56,.15);border-radius:999px;background:#fff;overflow:hidden}.pc-cart-page-qty a{height:100%;display:grid;place-items:center;color:#162238;text-decoration:none;font-size:18px}.pc-cart-page-qty input{width:100%;border:0;outline:0;background:transparent;text-align:center;font:inherit;font-size:11px;font-weight:800}.pc-cart-line__remove{color:#6b7480;font-size:10px}.pc-cart-line__price{padding-top:10px;text-align:right;display:flex;flex-direction:column;gap:4px;font-size:13px}.pc-cart-line__price s{color:#8b9096}.pc-cart-page__update-row{padding-top:24px;display:flex;justify-content:space-between;align-items:center}.pc-cart-page__update-row a{color:#162238;font-size:11px;font-weight:800}.pc-cart-page__update-row button{min-height:42px;padding:0 18px;border:1px solid rgba(22,34,56,.18);border-radius:999px;background:#fff;color:#162238;font:inherit;font-size:10px;font-weight:850;cursor:pointer}.pc-cart-summary{align-self:start;position:sticky;top:140px;padding:30px;border-radius:28px;background:#fff;box-shadow:0 20px 60px rgba(22,34,56,.07)}.pc-cart-summary__eyebrow{margin:0 0 24px;color:#7e9b81;font-size:10px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}.pc-cart-summary__row{padding:12px 0;display:flex;justify-content:space-between;gap:20px;border-bottom:1px solid rgba(22,34,56,.1)}.pc-cart-summary__row strong{font-size:15px}.pc-cart-summary__discount{color:#58705e}.pc-cart-summary__note{margin:15px 0;color:#7b8490;font-size:10px;line-height:1.5}.pc-cart-summary__label{display:block;margin:18px 0 7px;font-size:10px;font-weight:850}.pc-cart-summary textarea{width:100%;border:1px solid rgba(22,34,56,.14);border-radius:14px;padding:12px;resize:vertical;font:inherit}.pc-cart-summary__checkout{width:100%;min-height:56px;margin-top:18px;border:0;border-radius:999px;background:#162238;color:#fff;font:inherit;font-size:11px;font-weight:900;letter-spacing:.07em;text-transform:uppercase;cursor:pointer}.pc-cart-summary__accelerated{margin-top:12px}.pc-cart-summary__trust{margin-top:18px;padding-top:16px;border-top:1px solid rgba(22,34,56,.1);display:flex;justify-content:space-between;gap:10px;color:#747e89;font-size:9px}
+@media(max-width:989px){.pc-cart-page__grid{grid-template-columns:1fr}.pc-cart-summary{position:static}.pc-cart-page__inner{width:calc(100% - 32px);padding:54px 0 80px}}
+@media(max-width:620px){.pc-cart-page__head h1{font-size:clamp(50px,16vw,72px)}.pc-cart-page__head>span{position:static;display:block;margin-top:12px}.pc-cart-line{grid-template-columns:110px 1fr;gap:14px}.pc-cart-line__media{height:110px}.pc-cart-line__price{grid-column:2;text-align:left;padding-top:0}.pc-cart-page__update-row{align-items:flex-start;gap:16px;flex-direction:column}.pc-cart-summary{padding:24px}.pc-cart-summary__trust{flex-direction:column}}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name":"P&C cart",
+  "settings":[{"type":"checkbox","id":"show_cart_note","label":"Show order note","default":true}]
+}
+{% endschema %}

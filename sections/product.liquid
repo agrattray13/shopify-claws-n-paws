@@ -1,0 +1,339 @@
+{% liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign product_form_id = 'pc-product-form-' | append: section.id
+%}
+
+<section class="pc-product-main" data-pc-product-root data-section-id="{{ section.id }}" data-currency="{{ cart.currency.iso_code | default: shop.currency | escape }}">
+  <div class="pc-product-main__shell">
+    <div class="pc-product-gallery" aria-label="Product media">
+      {% if product.media.size > 0 %}
+        <div class="pc-product-gallery__rail" data-pc-gallery-rail>
+          {% for media in product.media %}
+            <div class="pc-product-gallery__item" id="pc-media-{{ media.id }}">
+              {% case media.media_type %}
+                {% when 'image' %}
+                  {{
+                    media
+                    | image_url: width: 1800
+                    | image_tag:
+                      loading: 'lazy',
+                      widths: '480,720,960,1200,1500,1800',
+                      sizes: '(min-width: 990px) 58vw, 100vw',
+                      alt: media.alt
+                  }}
+                {% when 'video' %}
+                  {{ media | video_tag: controls: true, image_size: '1200x', preload: 'metadata' }}
+                {% when 'external_video' %}
+                  {{ media | external_video_tag }}
+                {% when 'model' %}
+                  {{ media | model_viewer_tag: image_size: '1200x', reveal: 'interaction', toggleable: true }}
+              {% endcase %}
+            </div>
+          {% endfor %}
+        </div>
+
+        {% if product.media.size > 1 %}
+          <nav class="pc-product-gallery__thumbs" aria-label="Product image thumbnails">
+            {% for media in product.media %}
+              <a href="#pc-media-{{ media.id }}" class="pc-product-gallery__thumb" aria-label="View media {{ forloop.index }}">
+                {% if media.preview_image != blank %}
+                  {{ media.preview_image | image_url: width: 180 | image_tag: loading: 'lazy', widths: '90,140,180', sizes: '72px', alt: media.alt }}
+                {% endif %}
+              </a>
+            {% endfor %}
+          </nav>
+        {% endif %}
+      {% else %}
+        <div class="pc-product-gallery__item pc-product-gallery__placeholder">
+          {{ 'product-1' | placeholder_svg_tag }}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="pc-product-info">
+      <div class="pc-product-info__sticky">
+        {% if product.vendor != blank and section.settings.show_vendor %}
+          <p class="pc-product-info__eyebrow">{{ product.vendor | escape }}</p>
+        {% endif %}
+
+        <h1>{{ product.title | escape }}</h1>
+
+        <div class="pc-product-price" aria-live="polite" data-pc-price-wrap>
+          <span class="pc-product-price__current" data-pc-price>{{ current_variant.price | money }}</span>
+          <s data-pc-compare {% unless current_variant.compare_at_price > current_variant.price %}hidden{% endunless %}>
+            {% if current_variant.compare_at_price > current_variant.price %}{{ current_variant.compare_at_price | money }}{% endif %}
+          </s>
+          <span class="pc-product-price__sale" data-pc-sale-badge {% unless current_variant.compare_at_price > current_variant.price %}hidden{% endunless %}>Sale</span>
+        </div>
+
+        {% if product.description != blank %}
+          <div class="pc-product-info__intro">
+            {{ product.description | strip_html | truncatewords: 38 }}
+          </div>
+        {% endif %}
+
+        {% form 'product', product, id: product_form_id, class: 'pc-product-main__form' %}
+          {% unless product.has_only_default_variant %}
+            <div class="pc-product-options">
+              {% for option in product.options_with_values %}
+                <label class="pc-product-option">
+                  <span>{{ option.name | escape }}</span>
+                  <select data-pc-option-select data-option-position="{{ option.position }}" aria-label="{{ option.name | escape }}">
+                    {% for value in option.values %}
+                      <option value="{{ value | escape }}" {% if option.selected_value == value %}selected{% endif %}>{{ value | escape }}</option>
+                    {% endfor %}
+                  </select>
+                </label>
+              {% endfor %}
+            </div>
+          {% endunless %}
+
+          <input type="hidden" name="id" value="{{ current_variant.id }}" data-pc-variant-id>
+
+          <div class="pc-product-purchase">
+            <label class="pc-product-qty">
+              <span class="visually-hidden">Quantity</span>
+              <button type="button" data-pc-main-qty-minus aria-label="Decrease quantity">−</button>
+              <input type="number" name="quantity" min="1" value="1" inputmode="numeric" aria-label="Quantity" data-pc-main-qty>
+              <button type="button" data-pc-main-qty-plus aria-label="Increase quantity">+</button>
+            </label>
+
+            <button
+              type="submit"
+              name="add"
+              class="pc-product-add"
+              data-pc-main-add
+              {% unless current_variant.available %}disabled{% endunless %}
+            >
+              <span data-pc-add-label>{% if current_variant.available %}Add to cart{% else %}Sold out{% endif %}</span>
+            </button>
+          </div>
+
+          {% if section.settings.show_dynamic_checkout %}
+            <div class="pc-product-dynamic">{{ form | payment_button }}</div>
+          {% endif %}
+
+          {% if current_variant.available %}
+            <p class="pc-product-status" data-pc-status>In stock and ready to order.</p>
+          {% else %}
+            <p class="pc-product-status" data-pc-status>Currently unavailable.</p>
+          {% endif %}
+        {% endform %}
+
+        <div class="pc-product-assurances" aria-label="Shopping assurances">
+          <div><span>✓</span><strong>Secure checkout</strong><small>Protected Shopify checkout</small></div>
+          <div><span>↺</span><strong>Easy support</strong><small>Questions? We’re here to help</small></div>
+          <div><span>♡</span><strong>Pet-first picks</strong><small>Chosen with pets in mind</small></div>
+        </div>
+
+        <div class="pc-product-accordions">
+          {% if product.description != blank %}
+            <details open>
+              <summary>Product details <span>+</span></summary>
+              <div class="pc-product-accordion__content rte">{{ product.description }}</div>
+            </details>
+          {% endif %}
+
+          {% if section.settings.care_text != blank %}
+            <details>
+              <summary>Care & information <span>+</span></summary>
+              <div class="pc-product-accordion__content rte">{{ section.settings.care_text }}</div>
+            </details>
+          {% endif %}
+
+          {% if shop.shipping_policy != blank %}
+            <details>
+              <summary>Shipping <span>+</span></summary>
+              <div class="pc-product-accordion__content">
+                <p>{{ shop.shipping_policy.body | strip_html | truncatewords: 55 }}</p>
+                <a href="{{ shop.shipping_policy.url }}">Read our shipping policy →</a>
+              </div>
+            </details>
+          {% endif %}
+
+          {% if shop.refund_policy != blank %}
+            <details>
+              <summary>Returns & refunds <span>+</span></summary>
+              <div class="pc-product-accordion__content">
+                <p>{{ shop.refund_policy.body | strip_html | truncatewords: 55 }}</p>
+                <a href="{{ shop.refund_policy.url }}">Read our refund policy →</a>
+              </div>
+            </details>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script type="application/json" data-pc-product-json>
+  {{ product.variants | json }}
+</script>
+
+{% stylesheet %}
+  .pc-product-main { background:#f7f3ea; color:#162238; }
+  .pc-product-main * { box-sizing:border-box; }
+  .pc-product-main__shell { width:min(1560px,100%); margin:0 auto; display:grid; grid-template-columns:minmax(0,1.18fr) minmax(390px,.82fr); gap:0; }
+  .pc-product-gallery { padding:24px 24px 72px 36px; min-width:0; }
+  .pc-product-gallery__rail { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+  .pc-product-gallery__item { min-height:480px; overflow:hidden; border-radius:28px; background:#efe9dd; scroll-margin-top:130px; }
+  .pc-product-gallery__item:first-child { grid-column:1 / -1; min-height:690px; }
+  .pc-product-gallery__item img,.pc-product-gallery__item video,.pc-product-gallery__item model-viewer,.pc-product-gallery__placeholder svg { width:100%; height:100%; min-height:inherit; display:block; object-fit:cover; }
+  .pc-product-gallery__thumbs { display:none; }
+  .pc-product-info { padding:46px 44px 72px 36px; }
+  .pc-product-info__sticky { position:sticky; top:130px; max-width:620px; }
+  .pc-product-info__eyebrow { margin:0 0 14px; color:#7e9b81; font-size:11px; font-weight:850; letter-spacing:.14em; text-transform:uppercase; }
+  .pc-product-info h1 { margin:0; font-size:clamp(42px,4.4vw,70px); line-height:.98; letter-spacing:-.052em; text-wrap:balance; }
+  .pc-product-price { margin-top:22px; display:flex; align-items:center; flex-wrap:wrap; gap:12px; font-size:20px; }
+  .pc-product-price__current { font-weight:850; }
+  .pc-product-price s { color:#7b7d7e; }
+  .pc-product-price__sale { padding:6px 10px; border-radius:99px; background:#d4a65a; color:#162238; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:.08em; }
+  .pc-product-info__intro { margin-top:22px; max-width:560px; color:#53606f; line-height:1.7; font-size:15px; }
+  .pc-product-main__form { margin-top:30px; }
+  .pc-product-options { display:grid; gap:14px; }
+  .pc-product-option { display:grid; gap:7px; }
+  .pc-product-option > span { font-size:11px; font-weight:850; letter-spacing:.08em; text-transform:uppercase; }
+  .pc-product-option select { width:100%; min-height:52px; border:1px solid rgba(22,34,56,.18); border-radius:14px; background:#fff; color:#162238; padding:0 44px 0 15px; font:inherit; }
+  .pc-product-purchase { margin-top:18px; display:grid; grid-template-columns:132px 1fr; gap:10px; }
+  .pc-product-qty { min-height:58px; display:grid; grid-template-columns:38px 1fr 38px; align-items:center; border:1px solid rgba(22,34,56,.16); border-radius:999px; background:#fff; overflow:hidden; }
+  .pc-product-qty button { height:100%; border:0; background:transparent; color:#162238; font-size:21px; cursor:pointer; }
+  .pc-product-qty input { width:100%; border:0; outline:0; text-align:center; background:transparent; color:#162238; font:inherit; font-weight:800; -moz-appearance:textfield; }
+  .pc-product-qty input::-webkit-outer-spin-button,.pc-product-qty input::-webkit-inner-spin-button { appearance:none; margin:0; }
+  .pc-product-add { min-height:58px; border:0; border-radius:999px; padding:14px 26px; background:#162238; color:#fff; font:inherit; font-size:12px; font-weight:900; letter-spacing:.07em; text-transform:uppercase; cursor:pointer; transition:transform .2s ease,background .2s ease; }
+  .pc-product-add:hover:not(:disabled) { transform:translateY(-2px); background:#233652; }
+  .pc-product-add:disabled { opacity:.5; cursor:not-allowed; }
+  .pc-product-dynamic { margin-top:10px; }
+  .pc-product-status { margin:13px 4px 0; color:#637064; font-size:12px; }
+  .pc-product-assurances { margin-top:28px; padding:20px 0; display:grid; grid-template-columns:repeat(3,1fr); gap:10px; border-top:1px solid rgba(22,34,56,.12); border-bottom:1px solid rgba(22,34,56,.12); }
+  .pc-product-assurances div { display:grid; grid-template-columns:auto 1fr; gap:0 8px; align-items:center; }
+  .pc-product-assurances span { grid-row:1 / span 2; width:34px; height:34px; border-radius:50%; display:grid; place-items:center; background:#e6eadf; color:#466052; font-weight:900; }
+  .pc-product-assurances strong { font-size:11px; }
+  .pc-product-assurances small { color:#7d8690; font-size:9px; line-height:1.3; }
+  .pc-product-accordions { margin-top:16px; }
+  .pc-product-accordions details { border-bottom:1px solid rgba(22,34,56,.12); }
+  .pc-product-accordions summary { min-height:58px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; list-style:none; font-size:12px; font-weight:850; letter-spacing:.03em; }
+  .pc-product-accordions summary::-webkit-details-marker { display:none; }
+  .pc-product-accordions details[open] summary span { transform:rotate(45deg); }
+  .pc-product-accordions summary span { font-size:18px; transition:transform .2s ease; }
+  .pc-product-accordion__content { padding:0 0 22px; color:#53606f; font-size:14px; line-height:1.7; }
+  .pc-product-accordion__content a { color:#162238; font-weight:800; }
+  .visually-hidden { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip:rect(0,0,0,0)!important; white-space:nowrap!important; border:0!important; }
+  @media(max-width:989px){
+    .pc-product-main__shell { grid-template-columns:1fr; }
+    .pc-product-gallery { padding:16px 16px 0; }
+    .pc-product-gallery__rail { display:flex; overflow-x:auto; scroll-snap-type:x mandatory; gap:10px; scrollbar-width:none; }
+    .pc-product-gallery__rail::-webkit-scrollbar { display:none; }
+    .pc-product-gallery__item,.pc-product-gallery__item:first-child { grid-column:auto; flex:0 0 88%; min-height:560px; scroll-snap-align:center; }
+    .pc-product-gallery__thumbs { margin-top:12px; display:flex; gap:8px; overflow-x:auto; }
+    .pc-product-gallery__thumb { flex:0 0 68px; height:68px; border-radius:12px; overflow:hidden; background:#eee; }
+    .pc-product-gallery__thumb img { width:100%;height:100%;object-fit:cover; }
+    .pc-product-info { padding:34px 22px 70px; }
+    .pc-product-info__sticky { position:static; max-width:none; }
+  }
+  @media(max-width:640px){
+    .pc-product-gallery__item,.pc-product-gallery__item:first-child { min-height:470px; }
+    .pc-product-info h1 { font-size:clamp(39px,12vw,56px); }
+    .pc-product-purchase { grid-template-columns:1fr; }
+    .pc-product-qty { width:140px; }
+    .pc-product-assurances { grid-template-columns:1fr; gap:14px; }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (() => {
+    const roots = document.querySelectorAll('[data-pc-product-root]');
+    roots.forEach((root) => {
+      const jsonNode = root.nextElementSibling?.matches('[data-pc-product-json]') ? root.nextElementSibling : document.querySelector('[data-pc-product-json]');
+      if (!jsonNode) return;
+      let variants = [];
+      try { variants = JSON.parse(jsonNode.textContent); } catch (_) { return; }
+
+      const form = root.querySelector('.pc-product-main__form');
+      const optionSelects = [...root.querySelectorAll('[data-pc-option-select]')];
+      const variantInput = root.querySelector('[data-pc-variant-id]');
+      const price = root.querySelector('[data-pc-price]');
+      const compare = root.querySelector('[data-pc-compare]');
+      const sale = root.querySelector('[data-pc-sale-badge]');
+      const add = root.querySelector('[data-pc-main-add]');
+      const addLabel = root.querySelector('[data-pc-add-label]');
+      const status = root.querySelector('[data-pc-status]');
+      const qty = root.querySelector('[data-pc-main-qty]');
+      const currency = root.dataset.currency || 'USD';
+
+      const formatMoney = (cents) => {
+        try { return new Intl.NumberFormat(document.documentElement.lang || 'en', { style:'currency', currency }).format(cents / 100); }
+        catch (_) { return (cents / 100).toFixed(2); }
+      };
+
+      const findVariant = () => {
+        const values = optionSelects.map((select) => select.value);
+        return variants.find((variant) => variant.options.every((value, index) => value === values[index]));
+      };
+
+      const syncVariant = () => {
+        const variant = optionSelects.length ? findVariant() : variants.find((v) => String(v.id) === String(variantInput?.value)) || variants[0];
+        if (!variant) {
+          if (add) add.disabled = true;
+          if (addLabel) addLabel.textContent = 'Unavailable';
+          if (status) status.textContent = 'This combination is unavailable.';
+          return;
+        }
+        if (variantInput) variantInput.value = variant.id;
+        if (price) price.textContent = formatMoney(variant.price);
+        if (compare) {
+          const hasCompare = Number(variant.compare_at_price || 0) > Number(variant.price || 0);
+          compare.hidden = !hasCompare;
+          compare.textContent = hasCompare ? formatMoney(variant.compare_at_price) : '';
+          if (sale) sale.hidden = !hasCompare;
+        }
+        if (add) add.disabled = !variant.available;
+        if (addLabel) addLabel.textContent = variant.available ? 'Add to cart' : 'Sold out';
+        if (status) status.textContent = variant.available ? 'In stock and ready to order.' : 'Currently unavailable.';
+        const url = new URL(window.location.href);
+        url.searchParams.set('variant', variant.id);
+        window.history.replaceState({}, '', url);
+      };
+
+      optionSelects.forEach((select) => select.addEventListener('change', syncVariant));
+      root.querySelector('[data-pc-main-qty-minus]')?.addEventListener('click', () => { qty.value = Math.max(1, (Number(qty.value) || 1) - 1); });
+      root.querySelector('[data-pc-main-qty-plus]')?.addEventListener('click', () => { qty.value = Math.max(1, (Number(qty.value) || 1) + 1); });
+
+      add?.addEventListener('click', async (event) => {
+        if (!form || add.disabled) return;
+        event.preventDefault();
+        const original = addLabel?.textContent || 'Add to cart';
+        add.disabled = true;
+        if (addLabel) addLabel.textContent = 'Adding…';
+        try {
+          const response = await fetch(`${window.Shopify?.routes?.root || '/'}cart/add.js`, { method:'POST', body:new FormData(form), headers:{ Accept:'application/json' } });
+          if (!response.ok) throw new Error('Add failed');
+          const cartResponse = await fetch(`${window.Shopify?.routes?.root || '/'}cart.js`, { headers:{ Accept:'application/json' } });
+          const cart = await cartResponse.json();
+          document.dispatchEvent(new CustomEvent('pc:cart-updated', { detail:{ cart } }));
+          const cartTrigger = document.querySelector('[data-pc-cart-open]');
+          if (cartTrigger) cartTrigger.click();
+          else window.location.href = `${window.Shopify?.routes?.root || '/'}cart`;
+        } catch (_) {
+          form.submit();
+        } finally {
+          add.disabled = false;
+          if (addLabel) addLabel.textContent = original;
+          syncVariant();
+        }
+      });
+
+      syncVariant();
+    });
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "P&C product",
+  "settings": [
+    { "type": "checkbox", "id": "show_vendor", "label": "Show vendor", "default": true },
+    { "type": "checkbox", "id": "show_dynamic_checkout", "label": "Show dynamic checkout button", "default": true },
+    { "type": "richtext", "id": "care_text", "label": "Care & information", "default": "<p>Always follow the product label and manufacturer guidance. Choose sizes and products appropriate for your pet.</p>" }
+  ]
+}
+{% endschema %}

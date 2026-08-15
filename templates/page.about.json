@@ -1,0 +1,16 @@
+{
+  "sections": {
+    "main": {
+      "type": "pc-about",
+      "blocks": {
+        "value1": {"type":"value","settings":{"heading":"Why we started","text":"A simpler, warmer way to shop for the animals who make home feel like home."}},
+        "value2": {"type":"value","settings":{"heading":"What we look for","text":"Useful, comfortable, fun products with a clear place in everyday pet life."}},
+        "value3": {"type":"value","settings":{"heading":"Customer focused","text":"Easy shopping, clear information, secure checkout, and help when you need it."}},
+        "value4": {"type":"value","settings":{"heading":"Always pet-first","text":"The best stores remember who the products are really for."}}
+      },
+      "block_order":["value1","value2","value3","value4"],
+      "settings":{}
+    }
+  },
+  "order":["main"]
+}

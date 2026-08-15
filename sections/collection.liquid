@@ -1,0 +1,175 @@
+<section class="pc-collection" data-pc-collection>
+  <header class="pc-collection-hero">
+    <div class="pc-collection-hero__inner">
+      <div>
+        <p class="pc-collection-hero__eyebrow">Paws & Claws collection</p>
+        <h1>{{ collection.title | escape }}</h1>
+        {% if collection.description != blank %}<div class="pc-collection-hero__description rte">{{ collection.description }}</div>{% endif %}
+      </div>
+      {% if collection.image != blank %}
+        <div class="pc-collection-hero__image">
+          {{ collection.image | image_url: width: 1200 | image_tag: loading: 'eager', widths: '500,800,1200', sizes: '(min-width: 990px) 42vw, 100vw', alt: collection.image.alt }}
+        </div>
+      {% endif %}
+    </div>
+  </header>
+
+  {% paginate collection.products by section.settings.products_per_page %}
+    <div class="pc-collection-toolbar">
+      <div class="pc-collection-toolbar__inner">
+        <button type="button" class="pc-filter-open" data-pc-filter-open aria-controls="pc-filters-{{ section.id }}" aria-expanded="false">
+          Filters <span aria-hidden="true">☰</span>
+        </button>
+        <p>{{ collection.products_count }} {% if collection.products_count == 1 %}product{% else %}products{% endif %}</p>
+        <label class="pc-sort-mobile">
+          <span>Sort</span>
+          <select data-pc-sort-proxy aria-label="Sort products">
+            {% assign current_sort = collection.sort_by | default: collection.default_sort_by %}
+            {% for option in collection.sort_options %}
+              <option value="{{ option.value }}" {% if option.value == current_sort %}selected{% endif %}>{{ option.name }}</option>
+            {% endfor %}
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <div class="pc-collection-layout">
+      <aside class="pc-filters" id="pc-filters-{{ section.id }}" data-pc-filter-drawer>
+        <div class="pc-filters__mobile-head">
+          <strong>Filter & sort</strong>
+          <button type="button" data-pc-filter-close aria-label="Close filters">×</button>
+        </div>
+
+        <form class="pc-filter-form" method="get" action="{{ collection.url }}" data-pc-filter-form>
+          <div class="pc-filter-sort">
+            <label for="pc-sort-{{ section.id }}">Sort by</label>
+            <select id="pc-sort-{{ section.id }}" name="sort_by" data-pc-sort-main>
+              {% assign current_sort = collection.sort_by | default: collection.default_sort_by %}
+              {% for option in collection.sort_options %}
+                <option value="{{ option.value }}" {% if option.value == current_sort %}selected{% endif %}>{{ option.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          {% if collection.filters.size > 0 %}
+            {% for filter in collection.filters %}
+              <details class="pc-filter-group" open>
+                <summary>{{ filter.label | escape }} <span>+</span></summary>
+                <div class="pc-filter-group__body">
+                  {% case filter.type %}
+                    {% when 'boolean', 'list' %}
+                      <ul>
+                        {% for value in filter.values %}
+                          <li>
+                            <label class="pc-filter-value {% if value.count == 0 and value.active == false %}is-disabled{% endif %}">
+                              <input
+                                type="checkbox"
+                                name="{{ value.param_name }}"
+                                value="{{ value.value }}"
+                                {% if value.active %}checked{% endif %}
+                                {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                              >
+                              <span>{{ value.label | escape }}</span>
+                              <small>{{ value.count }}</small>
+                            </label>
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    {% when 'price_range' %}
+                      <div class="pc-price-range">
+                        <label>
+                          <span>From</span>
+                          <input type="number" name="{{ filter.min_value.param_name }}" min="0" {% if filter.min_value.value %}value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"{% endif %} placeholder="0">
+                        </label>
+                        <label>
+                          <span>To</span>
+                          <input type="number" name="{{ filter.max_value.param_name }}" min="0" {% if filter.max_value.value %}value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"{% endif %} placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}">
+                        </label>
+                      </div>
+                  {% endcase %}
+                </div>
+              </details>
+            {% endfor %}
+          {% endif %}
+
+          <div class="pc-filter-actions">
+            <button type="submit">Apply filters</button>
+            <a href="{{ collection.url }}?sort_by={{ current_sort | url_encode }}">Clear filters</a>
+          </div>
+        </form>
+      </aside>
+
+      <div class="pc-collection-results">
+        {% assign has_active_filters = false %}
+        {% for filter in collection.filters %}
+          {% if filter.active_values.size > 0 or filter.min_value.value or filter.max_value.value %}{% assign has_active_filters = true %}{% endif %}
+        {% endfor %}
+        {% if has_active_filters %}
+          <div class="pc-active-filters" aria-label="Active filters">
+            {% for filter in collection.filters %}
+              {% for value in filter.active_values %}
+                <a href="{{ value.url_to_remove }}">{{ value.label | escape }} <span>×</span></a>
+              {% endfor %}
+              {% if filter.type == 'price_range' %}
+                {% if filter.min_value.value or filter.max_value.value %}
+                  <a href="{{ filter.url_to_remove }}">
+                    {% if filter.min_value.value %}{{ filter.min_value.value | money }}{% else %}{{ 0 | money }}{% endif %}
+                    –
+                    {% if filter.max_value.value %}{{ filter.max_value.value | money }}{% else %}{{ filter.range_max | money }}{% endif %}
+                    <span>×</span>
+                  </a>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+            <a class="pc-active-filters__clear" href="{{ collection.url }}?sort_by={{ current_sort | url_encode }}">Clear all</a>
+          </div>
+        {% endif %}
+
+        {% if collection.products.size > 0 %}
+          <div class="pc-collection-grid">
+            {% for product in collection.products %}
+              {% render 'pc-product-card', product: product %}
+            {% endfor %}
+          </div>
+          {{ 'pc-product-cards.css' | asset_url | stylesheet_tag }}
+        {% else %}
+          <div class="pc-collection-empty">
+            <h2>No products match those filters.</h2>
+            <p>Clear a filter or browse the full collection.</p>
+            <a href="{{ collection.url }}">View all in {{ collection.title | escape }}</a>
+          </div>
+        {% endif %}
+
+        {% if paginate.pages > 1 %}
+          <nav class="pc-pagination" aria-label="Pagination">
+            {% if paginate.previous %}<a href="{{ paginate.previous.url }}" aria-label="Previous page">← Previous</a>{% endif %}
+            <span>Page {{ paginate.current_page }} of {{ paginate.pages }}</span>
+            {% if paginate.next %}<a href="{{ paginate.next.url }}" aria-label="Next page">Next →</a>{% endif %}
+          </nav>
+        {% endif %}
+      </div>
+    </div>
+  {% endpaginate %}
+
+  <div class="pc-filter-backdrop" data-pc-filter-backdrop hidden></div>
+</section>
+
+{% stylesheet %}
+  .pc-collection{background:#fff;color:#162238}.pc-collection *{box-sizing:border-box}.pc-collection-hero{background:#f7f3ea}.pc-collection-hero__inner{width:min(1520px,calc(100% - 64px));min-height:420px;margin:0 auto;display:grid;grid-template-columns:1fr .72fr;gap:60px;align-items:center;padding:54px 0}.pc-collection-hero__eyebrow{margin:0 0 12px;color:#7e9b81;font-size:10px;font-weight:900;letter-spacing:.15em;text-transform:uppercase}.pc-collection-hero h1{margin:0;font-size:clamp(58px,7vw,112px);line-height:.88;letter-spacing:-.065em}.pc-collection-hero__description{max-width:700px;margin-top:24px;color:#576273;line-height:1.75;font-size:15px}.pc-collection-hero__image{height:320px;border-radius:28px;overflow:hidden}.pc-collection-hero__image img{width:100%;height:100%;object-fit:cover}.pc-collection-toolbar{position:sticky;top:var(--pc-sticky-offset,92px);z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-bottom:1px solid rgba(22,34,56,.1)}.pc-collection-toolbar__inner{width:min(1520px,calc(100% - 64px));min-height:64px;margin:0 auto;display:flex;align-items:center;gap:20px}.pc-collection-toolbar p{margin:0;color:#77808b;font-size:11px}.pc-filter-open{display:none}.pc-sort-mobile{margin-left:auto;display:none}.pc-collection-layout{width:min(1520px,calc(100% - 64px));margin:0 auto;display:grid;grid-template-columns:270px 1fr;gap:38px;padding:54px 0 100px}.pc-filters{align-self:start;position:sticky;top:170px}.pc-filters__mobile-head{display:none}.pc-filter-sort{padding-bottom:22px;border-bottom:1px solid rgba(22,34,56,.12)}.pc-filter-sort label{display:block;margin-bottom:8px;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.pc-filter-sort select,.pc-sort-mobile select{width:100%;min-height:44px;border:1px solid rgba(22,34,56,.15);border-radius:12px;background:#fff;color:#162238;padding:0 12px}.pc-filter-group{border-bottom:1px solid rgba(22,34,56,.12)}.pc-filter-group summary{min-height:56px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;list-style:none;font-size:12px;font-weight:850}.pc-filter-group summary::-webkit-details-marker{display:none}.pc-filter-group[open] summary span{transform:rotate(45deg)}.pc-filter-group summary span{font-size:18px;transition:transform .2s}.pc-filter-group__body{padding:0 0 18px}.pc-filter-group ul{list-style:none;margin:0;padding:0;display:grid;gap:9px}.pc-filter-value{display:grid;grid-template-columns:18px 1fr auto;gap:9px;align-items:center;font-size:12px;cursor:pointer}.pc-filter-value.is-disabled{opacity:.42;cursor:not-allowed}.pc-filter-value input{width:17px;height:17px;accent-color:#162238}.pc-filter-value small{color:#89909a}.pc-price-range{display:grid;grid-template-columns:1fr 1fr;gap:8px}.pc-price-range label{display:grid;gap:5px}.pc-price-range span{font-size:9px;text-transform:uppercase;letter-spacing:.07em}.pc-price-range input{width:100%;min-height:42px;border:1px solid rgba(22,34,56,.15);border-radius:10px;padding:0 10px}.pc-filter-actions{padding-top:20px;display:grid;gap:10px}.pc-filter-actions button{min-height:45px;border:0;border-radius:999px;background:#162238;color:#fff;font-weight:850;cursor:pointer}.pc-filter-actions a{text-align:center;color:#162238;font-size:11px}.pc-active-filters{margin-bottom:22px;display:flex;flex-wrap:wrap;gap:8px}.pc-active-filters a{padding:8px 11px;border-radius:999px;background:#f1eee7;color:#162238;text-decoration:none;font-size:10px;font-weight:750}.pc-active-filters__clear{text-decoration:underline!important;background:transparent!important}.pc-collection-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.pc-collection-empty{padding:90px 24px;text-align:center;background:#f7f3ea;border-radius:24px}.pc-collection-empty h2{font-size:38px;margin:0}.pc-collection-empty p{color:#6e7783}.pc-collection-empty a{display:inline-flex;margin-top:12px;padding:13px 19px;border-radius:999px;background:#162238;color:#fff;text-decoration:none;font-weight:800}.pc-pagination{margin-top:50px;padding-top:22px;border-top:1px solid rgba(22,34,56,.12);display:flex;justify-content:space-between;align-items:center;font-size:11px}.pc-pagination a{color:#162238;font-weight:800;text-decoration:none}.pc-filter-backdrop{display:none}
+  @media(max-width:1100px){.pc-collection-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.pc-collection-layout{grid-template-columns:240px 1fr}}
+  @media(max-width:749px){.pc-collection-hero__inner{width:calc(100% - 32px);min-height:auto;grid-template-columns:1fr;gap:28px;padding:48px 0 26px}.pc-collection-hero h1{font-size:clamp(54px,18vw,82px)}.pc-collection-hero__image{height:240px}.pc-collection-toolbar{top:74px}.pc-collection-toolbar__inner{width:calc(100% - 32px);justify-content:space-between}.pc-filter-open{display:inline-flex;align-items:center;gap:8px;border:0;background:transparent;color:#162238;font-weight:850}.pc-collection-toolbar p{display:none}.pc-sort-mobile{display:flex;align-items:center;gap:8px;margin-left:0;font-size:10px;font-weight:800}.pc-sort-mobile select{min-height:38px;width:150px}.pc-collection-layout{width:calc(100% - 32px);display:block;padding:28px 0 70px}.pc-filters{position:fixed;z-index:90;inset:0 0 0 auto;width:min(88vw,390px);height:100dvh;overflow:auto;background:#fff;padding:20px;transform:translateX(105%);transition:transform .28s ease}.pc-filters.is-open{transform:translateX(0)}.pc-filters__mobile-head{min-height:52px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(22,34,56,.12)}.pc-filters__mobile-head button{border:0;background:transparent;font-size:28px;color:#162238}.pc-filter-sort{display:none}.pc-filter-backdrop{position:fixed;z-index:89;inset:0;background:rgba(9,17,29,.48);display:block}.pc-collection-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.pc-pagination{gap:12px}.pc-pagination span{text-align:center}}
+  @media(max-width:480px){.pc-collection-grid{grid-template-columns:1fr}.pc-sort-mobile span{display:none}.pc-sort-mobile select{width:142px}}
+{% endstylesheet %}
+
+{% javascript %}
+  (()=>{document.querySelectorAll('[data-pc-collection]').forEach(root=>{const drawer=root.querySelector('[data-pc-filter-drawer]');const backdrop=root.querySelector('[data-pc-filter-backdrop]');const open=root.querySelector('[data-pc-filter-open]');const close=root.querySelector('[data-pc-filter-close]');const mainSort=root.querySelector('[data-pc-sort-main]');const proxy=root.querySelector('[data-pc-sort-proxy]');const form=root.querySelector('[data-pc-filter-form]');const show=()=>{drawer?.classList.add('is-open');if(backdrop)backdrop.hidden=false;open?.setAttribute('aria-expanded','true');document.documentElement.style.overflow='hidden'};const hide=()=>{drawer?.classList.remove('is-open');if(backdrop)backdrop.hidden=true;open?.setAttribute('aria-expanded','false');document.documentElement.style.overflow=''};open?.addEventListener('click',show);close?.addEventListener('click',hide);backdrop?.addEventListener('click',hide);document.addEventListener('keydown',e=>{if(e.key==='Escape')hide()});mainSort?.addEventListener('change',()=>form?.submit());proxy?.addEventListener('change',()=>{if(mainSort){mainSort.value=proxy.value;form?.submit()}})})})();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name":"P&C collection",
+  "settings":[
+    {"type":"range","id":"products_per_page","label":"Products per page","min":8,"max":32,"step":4,"default":24}
+  ]
+}
+{% endschema %}

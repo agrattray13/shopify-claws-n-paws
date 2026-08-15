@@ -1,0 +1,63 @@
+<section
+  class="pc-recommendations"
+  data-pc-recommendations
+  data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ section.settings.products_to_show }}&intent=related"
+>
+  {% if recommendations.performed and recommendations.products_count > 0 %}
+    <div class="pc-recommendations__inner">
+      <div class="pc-recommendations__head">
+        <div>
+          <p>{{ section.settings.eyebrow | escape }}</p>
+          <h2>{{ section.settings.heading | escape }}</h2>
+        </div>
+      </div>
+      <div class="pc-recommendations__grid">
+        {% for recommendation in recommendations.products %}
+          {% render 'pc-product-card', product: recommendation %}
+        {% endfor %}
+      </div>
+    </div>
+    {{ 'pc-product-cards.css' | asset_url | stylesheet_tag }}
+  {% endif %}
+</section>
+
+{% stylesheet %}
+  .pc-recommendations { background:#fff; color:#162238; }
+  .pc-recommendations__inner { width:min(1480px,calc(100% - 64px)); margin:0 auto; padding:92px 0 110px; }
+  .pc-recommendations__head { margin-bottom:34px; display:flex; justify-content:space-between; align-items:end; }
+  .pc-recommendations__head p { margin:0 0 10px; color:#7e9b81; font-size:10px; font-weight:900; letter-spacing:.14em; text-transform:uppercase; }
+  .pc-recommendations__head h2 { margin:0; font-size:clamp(42px,5vw,72px); line-height:.95; letter-spacing:-.055em; }
+  .pc-recommendations__grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; }
+  @media(max-width:989px){ .pc-recommendations__grid{grid-template-columns:repeat(2,minmax(0,1fr));}.pc-recommendations__inner{width:min(100% - 32px,1480px);padding:68px 0 84px;} }
+  @media(max-width:560px){ .pc-recommendations__grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;padding-bottom:8px}.pc-recommendations__grid>.pc-product-card{flex:0 0 82%;scroll-snap-align:start;} }
+{% endstylesheet %}
+
+{% javascript %}
+  (() => {
+    document.querySelectorAll('[data-pc-recommendations]').forEach((container) => {
+      if (container.dataset.loaded === 'true' || !container.dataset.url) return;
+      container.dataset.loaded = 'true';
+      fetch(container.dataset.url)
+        .then((response) => response.text())
+        .then((text) => {
+          const html = document.createElement('div');
+          html.innerHTML = text;
+          const incoming = html.querySelector('[data-pc-recommendations]');
+          if (incoming?.innerHTML.trim()) container.innerHTML = incoming.innerHTML;
+        })
+        .catch(() => {});
+    });
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "P&C recommendations",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "You may also love" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "More Tail-Wagging Favorites" },
+    { "type": "range", "id": "products_to_show", "label": "Products", "min": 2, "max": 8, "step": 1, "default": 4 }
+  ],
+  "presets": [{ "name": "P&C recommendations" }]
+}
+{% endschema %}

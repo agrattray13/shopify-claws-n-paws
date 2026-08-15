@@ -1,0 +1,142 @@
+{
+  "sections": {
+    "pc_hero": {
+      "type": "pc-hero",
+      "settings": {
+        "eyebrow": "For pets. For family.",
+        "heading": "Everything They Love. All in One Place.",
+        "text": "<p>Thoughtfully selected essentials, toys, comfort, and everyday favorites for happier dogs, cats, and the people who love them.</p>",
+        "primary_label": "Shop dogs",
+        "secondary_label": "Shop cats",
+        "content_position": "left",
+        "desktop_height": 760,
+        "overlay_opacity": 35,
+        "show_scroll_hint": true
+      }
+    },
+    "pc_pet": {
+      "type": "pc-shop-by-pet",
+      "blocks": {
+        "dogs": {
+          "type": "pet",
+          "settings": {
+            "kicker": "For your best friend",
+            "heading": "Dogs",
+            "text": "Play, walk, nap, repeat — discover everyday essentials made for life with dogs.",
+            "link_label": "Shop dogs"
+          }
+        },
+        "cats": {
+          "type": "pet",
+          "settings": {
+            "kicker": "For your favorite feline",
+            "heading": "Cats",
+            "text": "From quiet naps to midnight zoomies, find comfort, play, and everyday cat favorites.",
+            "link_label": "Shop cats"
+          }
+        }
+      },
+      "block_order": ["dogs", "cats"],
+      "settings": {
+        "eyebrow": "Pick their side of the store",
+        "heading": "Shop by Pet",
+        "text": "<p>Two personalities. Two worlds of favorites. One place to spoil them both.</p>"
+      }
+    },
+    "pc_categories": {
+      "type": "pc-category-grid",
+      "blocks": {
+        "toys": { "type": "category", "settings": { "title": "Toys" } },
+        "beds": { "type": "category", "settings": { "title": "Beds & Comfort" } },
+        "feeding": { "type": "category", "settings": { "title": "Bowls & Feeding" } },
+        "walk": { "type": "category", "settings": { "title": "Collars & Leashes" } },
+        "grooming": { "type": "category", "settings": { "title": "Grooming" } },
+        "travel": { "type": "category", "settings": { "title": "Travel" } },
+        "apparel": { "type": "category", "settings": { "title": "Clothing & Accessories" } },
+        "new": { "type": "category", "settings": { "title": "New Arrivals" } }
+      },
+      "block_order": ["toys", "beds", "feeding", "walk", "grooming", "travel", "apparel", "new"],
+      "settings": {
+        "eyebrow": "Everyday essentials",
+        "heading": "Find Their Favorites",
+        "text": "<p>From playtime to bedtime, browse the categories that make pet life better.</p>",
+        "all_label": "Shop all"
+      }
+    },
+    "pc_featured": {
+      "type": "pc-featured-products",
+      "settings": {
+        "eyebrow": "Pet parent approved",
+        "heading": "Paws & Claws Favorites",
+        "text": "<p>Useful, comfortable, fun, and easy-to-love picks for everyday pet life.</p>",
+        "link_label": "Explore all",
+        "products_to_show": 8
+      }
+    },
+    "pc_motion": {
+      "type": "pc-product-marquee",
+      "settings": {
+        "eyebrow": "Always something new",
+        "heading": "Something Special for Every Paw",
+        "products_to_show": 6
+      }
+    },
+    "pc_dog_story": {
+      "type": "pc-editorial-split",
+      "settings": {
+        "eyebrow": "For the dogs",
+        "heading": "Big Adventures Start With Happy Dogs.",
+        "text": "<p>Whether you're heading around the block or across town, find toys, walking gear, beds, feeding essentials, and accessories built for life with your best friend.</p>",
+        "link_label": "Explore dog essentials",
+        "layout": "image-left",
+        "background_style": "cream"
+      }
+    },
+    "pc_cat_story": {
+      "type": "pc-editorial-split",
+      "settings": {
+        "eyebrow": "For the cats",
+        "heading": "Made for Their Nine Lives.",
+        "text": "<p>From quiet afternoon naps to midnight zoomies, discover products selected to keep cats comfortable, curious, entertained, and completely spoiled.</p>",
+        "link_label": "Shop cat favorites",
+        "layout": "image-right",
+        "background_style": "navy"
+      }
+    },
+    "pc_trust": {
+      "type": "pc-trust",
+      "blocks": {
+        "quality": { "type": "trust", "settings": { "icon": "heart", "heading": "Carefully Selected", "text": "Products chosen with pets and pet owners in mind." } },
+        "pet_first": { "type": "trust", "settings": { "icon": "smile", "heading": "Pet-First Shopping", "text": "A simple experience designed around the animals you love." } },
+        "secure": { "type": "trust", "settings": { "icon": "shield", "heading": "Secure Checkout", "text": "Reliable checkout and payment security powered by Shopify." } },
+        "support": { "type": "trust", "settings": { "icon": "box", "heading": "Friendly Support", "text": "Clear help when you need it, without making shopping complicated." } }
+      },
+      "block_order": ["quality", "pet_first", "secure", "support"],
+      "settings": {
+        "eyebrow": "Why shop Paws & Claws",
+        "heading": "Built Around the Pets You Love",
+        "text": "<p>A straightforward pet store built around useful products, secure shopping, and a better experience for pet parents.</p>"
+      }
+    },
+    "pc_newsletter": {
+      "type": "pc-newsletter",
+      "settings": {
+        "eyebrow": "Paws & Claws Pack",
+        "heading": "Get First Dibs on the Good Stuff.",
+        "text": "<p>New arrivals, pet-parent favorites, special offers, and useful updates — delivered without the noise.</p>",
+        "fineprint": "By subscribing, you agree to receive marketing email. Unsubscribe anytime."
+      }
+    }
+  },
+  "order": [
+    "pc_hero",
+    "pc_pet",
+    "pc_categories",
+    "pc_featured",
+    "pc_motion",
+    "pc_dog_story",
+    "pc_cat_story",
+    "pc_trust",
+    "pc_newsletter"
+  ]
+}

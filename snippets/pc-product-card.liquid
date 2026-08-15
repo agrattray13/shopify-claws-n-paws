@@ -1,0 +1,65 @@
+{% liquid
+  assign card_product = product
+  assign card_variant = card_product.selected_or_first_available_variant
+%}
+
+<article class="pc-product-card">
+  <a class="pc-product-card__media" href="{{ card_product.url }}" aria-label="View {{ card_product.title | escape }}">
+    {% if card_product.featured_image != blank %}
+      {{
+        card_product.featured_image
+        | image_url: width: 900
+        | image_tag:
+          loading: 'lazy',
+          widths: '260,360,520,720,900',
+          sizes: '(min-width: 1200px) 25vw, (min-width: 750px) 33vw, 72vw',
+          alt: card_product.featured_image.alt
+      }}
+    {% else %}
+      {{ 'product-1' | placeholder_svg_tag: 'pc-product-card__placeholder' }}
+    {% endif %}
+
+    <div class="pc-product-card__badges">
+      {% unless card_product.available %}
+        <span class="pc-product-card__badge">Sold out</span>
+      {% else %}
+        {% if card_product.compare_at_price_max > card_product.price %}
+          <span class="pc-product-card__badge pc-product-card__badge--sale">Sale</span>
+        {% endif %}
+      {% endunless %}
+    </div>
+  </a>
+
+  <div class="pc-product-card__body">
+    {% if card_product.vendor != blank %}
+      <span class="pc-product-card__vendor">{{ card_product.vendor | escape }}</span>
+    {% endif %}
+
+    <a class="pc-product-card__title" href="{{ card_product.url }}">{{ card_product.title | escape }}</a>
+
+    <div class="pc-product-card__price">
+      {% if card_product.compare_at_price_max > card_product.price %}
+        <span class="pc-product-card__price-current">{{ card_product.price | money }}</span>
+        <s>{{ card_product.compare_at_price_max | money }}</s>
+      {% else %}
+        <span class="pc-product-card__price-current">
+          {% if card_product.price_varies %}From {% endif %}{{ card_product.price | money }}
+        </span>
+      {% endif %}
+    </div>
+
+    <div class="pc-product-card__actions">
+      {% if card_product.available and card_product.has_only_default_variant %}
+        {% form 'product', card_product, class: 'pc-product-card__form pc-js-quick-add' %}
+          <input type="hidden" name="id" value="{{ card_variant.id }}">
+          <input type="hidden" name="quantity" value="1">
+          <button type="submit" class="pc-product-card__button">Add to cart</button>
+        {% endform %}
+      {% elsif card_product.available %}
+        <a class="pc-product-card__button" href="{{ card_product.url }}">Choose options</a>
+      {% else %}
+        <a class="pc-product-card__button pc-product-card__button--muted" href="{{ card_product.url }}">View product</a>
+      {% endif %}
+    </div>
+  </div>
+</article>

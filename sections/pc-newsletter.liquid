@@ -1,0 +1,83 @@
+<section class="pc-newsletter">
+  <div class="pc-newsletter__decoration" aria-hidden="true">PAWS</div>
+  <div class="pc-newsletter__inner">
+    <div class="pc-newsletter__copy">
+      {% if section.settings.eyebrow != blank %}<p>{{ section.settings.eyebrow | escape }}</p>{% endif %}
+      <h2>{{ section.settings.heading | escape }}</h2>
+      {% if section.settings.text != blank %}<div>{{ section.settings.text }}</div>{% endif %}
+    </div>
+
+    <div class="pc-newsletter__form-wrap">
+      {% form 'customer', class: 'pc-newsletter__form' %}
+        <input type="hidden" name="contact[tags]" value="newsletter,paws-and-claws">
+        {% if form.posted_successfully? %}
+          <p class="pc-newsletter__success" tabindex="-1" autofocus>Welcome to the pack. You’re on the list.</p>
+        {% else %}
+          <label class="visually-hidden" for="pc-newsletter-email-{{ section.id }}">Email address</label>
+          <div class="pc-newsletter__field">
+            <input
+              id="pc-newsletter-email-{{ section.id }}"
+              type="email"
+              name="contact[email]"
+              value="{{ form.email }}"
+              placeholder="Email address"
+              autocomplete="email"
+              autocorrect="off"
+              autocapitalize="off"
+              required
+            >
+            <button type="submit">Join the pack <span aria-hidden="true">→</span></button>
+          </div>
+          {% if form.errors %}
+            <div class="pc-newsletter__error" role="alert">{{ form.errors | default_errors }}</div>
+          {% endif %}
+        {% endif %}
+      {% endform %}
+      <p class="pc-newsletter__fineprint">{{ section.settings.fineprint | escape }}</p>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .pc-newsletter { position: relative; overflow: hidden; padding: 110px max(24px,calc((100vw - 1480px)/2)); background: #dfe8df; color: #162238; }
+  .pc-newsletter .visually-hidden { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+  .pc-newsletter__decoration { position: absolute; right: -2vw; bottom: -4vw; color: rgba(22,34,56,.045); font-size: clamp(150px,25vw,390px); font-weight: 950; line-height: .75; letter-spacing: -.09em; pointer-events: none; }
+  .pc-newsletter__inner { position: relative; z-index: 2; display: grid; grid-template-columns: minmax(0,1fr) minmax(360px,.8fr); align-items: end; gap: clamp(50px,8vw,120px); }
+  .pc-newsletter__copy { max-width: 700px; }
+  .pc-newsletter__copy > p { margin: 0 0 13px; color: #607b64; font-size: 10px; font-weight: 850; letter-spacing: .15em; text-transform: uppercase; }
+  .pc-newsletter__copy h2 { margin: 0; font-size: clamp(48px,6vw,84px); line-height: .93; letter-spacing: -.06em; }
+  .pc-newsletter__copy > div { max-width: 560px; margin-top: 20px; color: #566371; font-size: 14px; line-height: 1.7; }
+  .pc-newsletter__copy > div p { margin: 0; }
+  .pc-newsletter__form { margin: 0; }
+  .pc-newsletter__field { min-height: 60px; padding: 5px; border: 1px solid rgba(22,34,56,.18); border-radius: 999px; background: rgba(255,255,255,.68); display: grid; grid-template-columns: 1fr auto; box-shadow: 0 16px 40px rgba(22,34,56,.06); }
+  .pc-newsletter__field:focus-within { border-color: #607b64; box-shadow: 0 0 0 3px rgba(96,123,100,.12); }
+  .pc-newsletter__field input { min-width: 0; padding: 0 18px; border: 0; outline: 0; background: transparent; color: #162238; font-size: 13px; }
+  .pc-newsletter__field button { min-width: 155px; padding: 0 20px; border: 0; border-radius: 999px; background: #162238; color: #fff; cursor: pointer; font-size: 9px; font-weight: 850; letter-spacing: .07em; text-transform: uppercase; }
+  .pc-newsletter__field button span { display: inline-block; margin-left: 6px; transition: transform .2s ease; }
+  .pc-newsletter__field button:hover span { transform: translateX(4px); }
+  .pc-newsletter__fineprint { margin: 10px 0 0; color: #6d7782; font-size: 9px; line-height: 1.5; }
+  .pc-newsletter__success { margin: 0; padding: 18px 20px; border-radius: 16px; background: rgba(255,255,255,.72); font-size: 13px; font-weight: 800; }
+  .pc-newsletter__error { margin-top: 10px; color: #963c3c; font-size: 11px; }
+  @media (max-width: 849px) {
+    .pc-newsletter { padding: 76px 18px; }
+    .pc-newsletter__inner { grid-template-columns: 1fr; gap: 36px; }
+  }
+  @media (max-width: 520px) {
+    .pc-newsletter__field { min-height: 0; padding: 0; border: 0; border-radius: 0; background: transparent; grid-template-columns: 1fr; gap: 8px; box-shadow: none; }
+    .pc-newsletter__field input { min-height: 52px; border: 1px solid rgba(22,34,56,.18); border-radius: 999px; background: rgba(255,255,255,.72); }
+    .pc-newsletter__field button { min-height: 50px; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "P&C newsletter",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Paws & Claws Pack" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Get First Dibs on the Good Stuff." },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>New arrivals, pet-parent favorites, special offers, and useful updates — delivered without the noise.</p>" },
+    { "type": "text", "id": "fineprint", "label": "Fine print", "default": "By subscribing, you agree to receive marketing email. Unsubscribe anytime." }
+  ],
+  "presets": [{ "name": "P&C newsletter" }]
+}
+{% endschema %}

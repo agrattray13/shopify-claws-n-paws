@@ -1,0 +1,38 @@
+<section class="pc-contact">
+  <div class="pc-contact__intro">
+    <p>{{ section.settings.eyebrow | escape }}</p>
+    <h1>{{ section.settings.heading | escape }}</h1>
+    <div class="rte">{{ section.settings.text }}</div>
+    <div class="pc-contact__direct">
+      <a href="mailto:arthurscreatives@gmail.com">arthurscreatives@gmail.com</a>
+      <a href="tel:+18137557590">813-755-7590</a>
+      <a href="tel:+18133147561">813-314-7561</a>
+    </div>
+  </div>
+
+  <div class="pc-contact__form-wrap">
+    {% form 'contact', class: 'pc-contact__form' %}
+      {% if form.posted_successfully? %}<div class="pc-contact__success" role="status">Thank you. Your message has been sent.</div>{% endif %}
+      {% if form.errors %}<div class="pc-contact__errors" role="alert">{{ form.errors | default_errors }}</div>{% endif %}
+      <div class="pc-contact__two">
+        <label><span>Name</span><input type="text" name="contact[name]" value="{{ form.name }}" autocomplete="name" required></label>
+        <label><span>Email</span><input type="email" name="contact[email]" value="{{ form.email }}" autocomplete="email" required></label>
+      </div>
+      <div class="pc-contact__two">
+        <label><span>Phone <small>optional</small></span><input type="tel" name="contact[phone]" value="{{ form.phone }}" autocomplete="tel"></label>
+        <label><span>Order number <small>optional</small></span><input type="text" name="contact[Order number]" autocomplete="off"></label>
+      </div>
+      <label><span>Message</span><textarea name="contact[body]" rows="7" required>{{ form.body }}</textarea></label>
+      <button type="submit">Send message</button>
+    {% endform %}
+  </div>
+</section>
+
+{% stylesheet %}
+.pc-contact{min-height:720px;background:#f7f3ea;color:#162238;display:grid;grid-template-columns:.82fr 1.18fr}.pc-contact *{box-sizing:border-box}.pc-contact__intro{padding:100px max(36px,calc((100vw - 1480px)/2));background:#162238;color:#fff;display:flex;flex-direction:column;justify-content:center}.pc-contact__intro>p{margin:0 0 14px;color:#d4a65a;font-size:10px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}.pc-contact__intro h1{margin:0;font-size:clamp(58px,6vw,92px);line-height:.9;letter-spacing:-.06em}.pc-contact__intro .rte{max-width:520px;margin-top:24px;color:rgba(255,255,255,.68);line-height:1.75}.pc-contact__direct{margin-top:36px;display:flex;flex-direction:column;align-items:flex-start;gap:8px}.pc-contact__direct a{color:#d4a65a;text-decoration:none;font-size:12px}.pc-contact__form-wrap{padding:90px max(36px,calc((100vw - 1480px)/2)) 90px 64px;display:flex;align-items:center}.pc-contact__form{width:min(720px,100%)}.pc-contact__two{display:grid;grid-template-columns:1fr 1fr;gap:14px}.pc-contact__form label{display:grid;gap:7px;margin-bottom:14px}.pc-contact__form label>span{font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}.pc-contact__form small{color:#89909a;font-weight:500;text-transform:none}.pc-contact__form input,.pc-contact__form textarea{width:100%;border:1px solid rgba(22,34,56,.15);border-radius:14px;background:#fff;padding:14px;color:#162238;font:inherit;outline:none}.pc-contact__form input{height:50px}.pc-contact__form input:focus,.pc-contact__form textarea:focus{border-color:#7e9b81;box-shadow:0 0 0 3px rgba(126,155,129,.12)}.pc-contact__form button{min-height:54px;padding:0 26px;border:0;border-radius:999px;background:#162238;color:#fff;font:inherit;font-size:10px;font-weight:900;letter-spacing:.07em;text-transform:uppercase;cursor:pointer}.pc-contact__success,.pc-contact__errors{margin-bottom:18px;padding:14px;border-radius:12px;background:#e5ece2;color:#385342;font-size:12px}.pc-contact__errors{background:#f3e6e4;color:#7d3d37}
+@media(max-width:900px){.pc-contact{grid-template-columns:1fr}.pc-contact__intro{min-height:570px;padding:78px 28px}.pc-contact__form-wrap{padding:62px 22px 82px}.pc-contact__form{margin:0 auto}}@media(max-width:560px){.pc-contact__two{grid-template-columns:1fr}}
+{% endstylesheet %}
+
+{% schema %}
+{"name":"P&C contact","settings":[{"type":"text","id":"eyebrow","label":"Eyebrow","default":"Customer care"},{"type":"text","id":"heading","label":"Heading","default":"We’d Love to Hear From You"},{"type":"richtext","id":"text","label":"Text","default":"<p>Questions about a product or order? Send us a message and give us the details we need to help.</p>"}],"presets":[{"name":"P&C contact"}]}
+{% endschema %}
