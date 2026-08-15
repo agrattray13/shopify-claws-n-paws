@@ -1,0 +1,81 @@
+{%- comment -%}
+  Cart drawer snippet — included from layout/theme.liquid
+{%- endcomment -%}
+
+<div class="cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-label="Shopping cart">
+  <div class="cart-drawer__overlay cart-toggle"></div>
+
+  <div class="cart-drawer__panel">
+    <div class="cart-drawer__header">
+      <h2 class="cart-drawer__title">Your Cart ({{ cart.item_count }})</h2>
+      <button class="cart-drawer__close cart-toggle" aria-label="Close cart" type="button">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="cart-drawer__body">
+      {%- if cart.item_count == 0 -%}
+        <div class="cart-empty">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007Z"/>
+          </svg>
+          <p style="font-weight:600; color:var(--color-primary); margin-bottom:0.5rem;">Your cart is empty</p>
+          <p style="font-size:0.875rem;">Add some items to get started!</p>
+          <a href="{{ routes.collections_url }}/all" class="btn btn-primary mt-2 cart-toggle">Shop Now</a>
+        </div>
+      {%- else -%}
+        {%- for item in cart.items -%}
+          <div class="cart-item" data-key="{{ item.key }}">
+            <div class="cart-item__image">
+              {%- if item.image -%}
+                <a href="{{ item.url }}">
+                  <img
+                    src="{{ item.image | image_url: width: 160 }}"
+                    alt="{{ item.image.alt | default: item.title | escape }}"
+                    width="80"
+                    height="80"
+                    loading="lazy">
+                </a>
+              {%- endif -%}
+            </div>
+
+            <div>
+              <p class="cart-item__title">
+                <a href="{{ item.url }}">{{ item.product.title }}</a>
+              </p>
+              {%- unless item.variant.title == 'Default Title' -%}
+                <p class="cart-item__variant">{{ item.variant.title }}</p>
+              {%- endunless -%}
+
+              <div class="cart-item__qty">
+                <button class="cart-item__qty-btn" data-action="decrement" aria-label="Decrease quantity" type="button">&minus;</button>
+                <span class="cart-item__qty-val">{{ item.quantity }}</span>
+                <button class="cart-item__qty-btn" data-action="increment" aria-label="Increase quantity" type="button">+</button>
+              </div>
+
+              <a href="/cart/change?id={{ item.key }}&quantity=0" class="cart-item__remove">Remove</a>
+            </div>
+
+            <div class="cart-item__price">{{ item.line_price | money }}</div>
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+
+    {%- if cart.item_count > 0 -%}
+      <div class="cart-drawer__footer">
+        <div class="cart-drawer__subtotal">
+          <span>Subtotal</span>
+          <span>{{ cart.total_price | money }}</span>
+        </div>
+        <p class="cart-drawer__note">Taxes and shipping calculated at checkout</p>
+        <div class="cart-drawer__actions">
+          <a href="{{ routes.cart_url }}" class="btn btn-outline btn-full">View Cart</a>
+          <a href="/checkout" class="btn btn-primary btn-full">Checkout</a>
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+</div>

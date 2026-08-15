@@ -1,0 +1,28 @@
+{%- comment -%}
+  Mobile navigation drawer — included from layout/theme.liquid
+{%- endcomment -%}
+
+<div class="mobile-nav" id="mobile-nav" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+  <div class="mobile-nav__overlay"></div>
+  <div class="mobile-nav__drawer">
+    <button class="mobile-nav__close" aria-label="Close menu" type="button">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
+      </svg>
+    </button>
+
+    <a class="mobile-nav__link" href="{{ routes.root_url }}">Home</a>
+    <a class="mobile-nav__link" href="{{ routes.collections_url }}/dogs">Dogs</a>
+    <a class="mobile-nav__link" href="{{ routes.collections_url }}/cats">Cats</a>
+    <a class="mobile-nav__link" href="{{ routes.collections_url }}/new-arrivals">New Arrivals</a>
+    <a class="mobile-nav__link" href="{{ routes.collections_url }}/best-sellers">Best Sellers</a>
+    <a class="mobile-nav__link" href="{{ routes.collections_url }}/all">Shop All</a>
+    <a class="mobile-nav__link" href="{{ routes.root_url }}pages/about">About</a>
+    <a class="mobile-nav__link" href="{{ routes.root_url }}pages/contact">Contact</a>
+
+    <div style="border-top:1px solid var(--color-border); padding-top:1rem; margin-top:0.5rem; display:flex; flex-direction:column; gap:0.5rem;">
+      <a class="mobile-nav__link" href="{{ routes.account_url }}">My Account</a>
+      <button class="mobile-nav__link search-toggle" type="button" style="text-align:left;">Search</button>
+    </div>
+  </div>
+</div>

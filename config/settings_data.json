@@ -1,0 +1,14 @@
+{
+  "current": {
+    "color_primary": "#162238",
+    "color_accent": "#D4A65A",
+    "color_background": "#F7F3EA",
+    "color_secondary": "#7E9B81",
+    "color_text": "#252525",
+    "font_heading": "playfair_display_n4",
+    "font_body": "lato_n4",
+    "logo_max_width": 160,
+    "show_announcement": true,
+    "announcement_text": "Free Shipping on Qualifying Orders | Because Every Pet Deserves Something Special"
+  }
+}
