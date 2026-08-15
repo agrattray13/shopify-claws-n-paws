@@ -1,0 +1,63 @@
+<div class="page-hero">
+  <div class="container">
+    <h1>About Us</h1>
+    <p>We're a team of pet lovers dedicated to bringing you the best for your furry family members.</p>
+  </div>
+</div>
+
+<div class="container page-content">
+  <div class="about-grid">
+    <div>
+      <h2>Our Story</h2>
+      <p>Paws &amp; Claws was founded by pet owners who were frustrated with the lack of quality, thoughtfully-curated pet products in one place. We set out to build a store we'd actually want to shop at — one that puts pets first.</p>
+      <p>Every product we carry is carefully selected with your pet's safety, comfort, and happiness in mind. We work with trusted brands and manufacturers who share our commitment to quality.</p>
+      <p>From cozy beds and nutritious food to fun toys and stylish accessories, we have everything your dog or cat needs to live their best life.</p>
+
+      <div style="display:flex; flex-wrap:wrap; gap:1rem; margin-top: var(--spacing-md);">
+        <a href="{{ routes.collections_url }}/dogs" class="btn btn-primary">Shop Dogs</a>
+        <a href="{{ routes.collections_url }}/cats" class="btn btn-outline">Shop Cats</a>
+      </div>
+    </div>
+
+    <div>
+      {%- if page.image -%}
+        <img src="{{ page.image | image_url: width: 700 }}" alt="{{ page.title | escape }}" width="700" height="500" loading="lazy">
+      {%- else -%}
+        <div style="background:linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%); border-radius: var(--radius-lg); min-height:350px; display:flex; align-items:center; justify-content:center; font-size:6rem;">🐾</div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- if page.content != blank -%}
+    <div style="max-width:800px; margin: var(--spacing-lg) auto 0; font-size:1.05rem; line-height:1.8;">
+      {{ page.content }}
+    </div>
+  {%- endif -%}
+
+  <!-- Values section -->
+  <div style="margin-top: var(--spacing-xl);">
+    <h2 class="text-center" style="margin-bottom: var(--spacing-md);">Our Values</h2>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-card__icon">🐾</div>
+        <p class="why-card__title">Pet-First Always</p>
+        <p class="why-card__desc">Every decision we make starts with one question: is this good for pets?</p>
+      </div>
+      <div class="why-card">
+        <div class="why-card__icon">✅</div>
+        <p class="why-card__title">Quality Assured</p>
+        <p class="why-card__desc">We test and vet every product before it reaches our shelves.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-card__icon">🌿</div>
+        <p class="why-card__title">Sustainable Choices</p>
+        <p class="why-card__desc">We prioritize eco-friendly products and responsible packaging.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-card__icon">💛</div>
+        <p class="why-card__title">Community Driven</p>
+        <p class="why-card__desc">A portion of every sale goes to local animal shelters.</p>
+      </div>
+    </div>
+  </div>
+</div>

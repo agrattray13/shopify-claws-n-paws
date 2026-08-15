@@ -1,0 +1,95 @@
+{
+  "t": {
+    "general": {
+      "title": "Paws & Claws",
+      "cart": "Cart",
+      "search": "Search",
+      "close": "Close",
+      "loading": "Loading...",
+      "back": "Back",
+      "or": "or"
+    },
+    "header": {
+      "home": "Home",
+      "dogs": "Dogs",
+      "cats": "Cats",
+      "new_arrivals": "New Arrivals",
+      "best_sellers": "Best Sellers",
+      "shop_all": "Shop All",
+      "about": "About",
+      "contact": "Contact",
+      "account": "Account",
+      "search": "Search",
+      "cart": "Cart",
+      "open_menu": "Open menu",
+      "close_menu": "Close menu"
+    },
+    "footer": {
+      "shop": "Shop",
+      "customer_care": "Customer Care",
+      "information": "Information",
+      "contact": "Contact",
+      "copyright": "All rights reserved.",
+      "made_with": "Made with ♥ for pets"
+    },
+    "products": {
+      "add_to_cart": "Add to Cart",
+      "buy_now": "Buy Now",
+      "sold_out": "Sold Out",
+      "sale": "Sale",
+      "new": "New",
+      "from": "From",
+      "quantity": "Quantity",
+      "description": "Description",
+      "shipping_info": "Shipping Information",
+      "returns": "Returns & Exchanges",
+      "you_may_also_like": "You May Also Like",
+      "vendor": "Brand"
+    },
+    "cart": {
+      "title": "Your Cart",
+      "empty": "Your cart is empty",
+      "empty_cta": "Start Shopping",
+      "subtotal": "Subtotal",
+      "checkout": "Checkout",
+      "view_cart": "View Cart",
+      "continue_shopping": "Continue Shopping",
+      "update": "Update Cart",
+      "remove": "Remove",
+      "taxes_shipping": "Taxes and shipping calculated at checkout",
+      "item_count": {
+        "one": "{{ count }} item",
+        "other": "{{ count }} items"
+      }
+    },
+    "collections": {
+      "sort_by": "Sort by",
+      "filters": "Filters",
+      "apply_filters": "Apply Filters",
+      "products_found": "products",
+      "sort": {
+        "featured": "Featured",
+        "best_selling": "Best Selling",
+        "az": "A\u2013Z",
+        "za": "Z\u2013A",
+        "price_asc": "Price: Low\u2013High",
+        "price_desc": "Price: High\u2013Low",
+        "newest": "Newest"
+      }
+    },
+    "newsletter": {
+      "heading": "Join the Paws & Claws Family",
+      "subheading": "Get exclusive deals, new arrivals, and pet care tips delivered to your inbox.",
+      "placeholder": "Your email address",
+      "button": "Subscribe",
+      "disclaimer": "No spam. Unsubscribe anytime."
+    },
+    "accessibility": {
+      "skip_to_content": "Skip to content"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next"
+    }
+  }
+}
