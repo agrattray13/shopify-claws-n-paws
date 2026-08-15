@@ -41,8 +41,6 @@
               {% endcase %}
             {% endfor %}
           </div>
-          {{ 'pc-product-cards.css' | asset_url | stylesheet_tag }}
-
           {% if paginate.pages > 1 %}
             <nav class="pc-search-pagination" aria-label="Search pagination">
               {% if paginate.previous %}<a href="{{ paginate.previous.url }}">← Previous</a>{% endif %}
