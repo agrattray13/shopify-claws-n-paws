@@ -1,0 +1,72 @@
+<section class="pc-search-page">
+  <div class="pc-search-page__inner">
+    <header class="pc-search-page__head">
+      <p>Find exactly what they need</p>
+      <h1>Search Paws & Claws</h1>
+      <form action="{{ routes.search_url }}" method="get" role="search" class="pc-search-page__form">
+        <label class="visually-hidden" for="pc-search-page-input-{{ section.id }}">Search store</label>
+        <input id="pc-search-page-input-{{ section.id }}" type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search toys, beds, grooming and more" autocomplete="off">
+        <input type="hidden" name="options[prefix]" value="last">
+        <button type="submit">Search</button>
+      </form>
+    </header>
+
+    {% if search.performed %}
+      <div class="pc-search-page__meta">
+        <strong>{% if search.results_count > 0 %}{{ search.results_count }} results{% else %}No matches yet{% endif %}</strong>
+        {% if search.terms != blank %}<span>for “{{ search.terms | escape }}”</span>{% endif %}
+      </div>
+
+      {% paginate search.results by section.settings.results_per_page %}
+        {% if search.results_count > 0 %}
+          <div class="pc-search-results">
+            {% for item in search.results %}
+              {% case item.object_type %}
+                {% when 'product' %}
+                  <div class="pc-search-result pc-search-result--product">{% render 'pc-product-card', product: item %}</div>
+                {% when 'article' %}
+                  <article class="pc-search-result pc-search-result--content">
+                    <span>Article</span>
+                    <a href="{{ item.url }}"><h2>{{ item.title | escape }}</h2></a>
+                    <p>{{ item.content | strip_html | truncatewords: 28 }}</p>
+                    <a class="pc-search-result__read" href="{{ item.url }}">Read article →</a>
+                  </article>
+                {% when 'page' %}
+                  <article class="pc-search-result pc-search-result--content">
+                    <span>Page</span>
+                    <a href="{{ item.url }}"><h2>{{ item.title | escape }}</h2></a>
+                    <p>{{ item.content | strip_html | truncatewords: 28 }}</p>
+                    <a class="pc-search-result__read" href="{{ item.url }}">Open page →</a>
+                  </article>
+              {% endcase %}
+            {% endfor %}
+          </div>
+          {{ 'pc-product-cards.css' | asset_url | stylesheet_tag }}
+
+          {% if paginate.pages > 1 %}
+            <nav class="pc-search-pagination" aria-label="Search pagination">
+              {% if paginate.previous %}<a href="{{ paginate.previous.url }}">← Previous</a>{% endif %}
+              <span>Page {{ paginate.current_page }} of {{ paginate.pages }}</span>
+              {% if paginate.next %}<a href="{{ paginate.next.url }}">Next →</a>{% endif %}
+            </nav>
+          {% endif %}
+        {% else %}
+          <div class="pc-search-page__empty">
+            <h2>Try another search.</h2>
+            <p>Use a product type, pet, category, or a simpler phrase.</p>
+            <a href="{{ routes.all_products_collection_url }}">Browse all products</a>
+          </div>
+        {% endif %}
+      {% endpaginate %}
+    {% endif %}
+  </div>
+</section>
+
+{% stylesheet %}
+.pc-search-page{background:#f7f3ea;color:#162238;min-height:70vh}.pc-search-page *{box-sizing:border-box}.pc-search-page__inner{width:min(1460px,calc(100% - 64px));margin:0 auto;padding:70px 0 110px}.pc-search-page__head{text-align:center}.pc-search-page__head>p{margin:0 0 12px;color:#7e9b81;font-size:10px;font-weight:900;letter-spacing:.15em;text-transform:uppercase}.pc-search-page__head h1{margin:0;font-size:clamp(54px,7vw,98px);line-height:.9;letter-spacing:-.065em}.pc-search-page__form{width:min(760px,100%);height:62px;margin:32px auto 0;padding:5px;display:grid;grid-template-columns:1fr auto;border:1px solid rgba(22,34,56,.15);border-radius:999px;background:#fff;box-shadow:0 15px 45px rgba(22,34,56,.06)}.pc-search-page__form input{min-width:0;border:0;outline:0;background:transparent;padding:0 20px;color:#162238;font:inherit}.pc-search-page__form button{border:0;border-radius:999px;padding:0 27px;background:#162238;color:#fff;font:inherit;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.07em;cursor:pointer}.pc-search-page__meta{margin:62px 0 20px;display:flex;align-items:baseline;gap:7px}.pc-search-page__meta strong{font-size:24px}.pc-search-page__meta span{color:#707a86;font-size:12px}.pc-search-results{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.pc-search-result--content{min-height:320px;padding:28px;border-radius:24px;background:#fff;display:flex;flex-direction:column;align-items:flex-start}.pc-search-result--content>span{color:#7e9b81;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.1em}.pc-search-result--content>a{text-decoration:none;color:#162238}.pc-search-result--content h2{margin:18px 0 0;font-size:28px;line-height:1;letter-spacing:-.04em}.pc-search-result--content p{color:#6b7582;font-size:12px;line-height:1.7}.pc-search-result__read{margin-top:auto!important;font-size:10px!important;font-weight:850}.pc-search-page__empty{margin-top:55px;padding:70px 28px;border-radius:28px;background:#fff;text-align:center}.pc-search-page__empty h2{margin:0;font-size:40px}.pc-search-page__empty p{color:#707a86}.pc-search-page__empty a{display:inline-flex;margin-top:13px;padding:13px 20px;border-radius:999px;background:#162238;color:#fff;text-decoration:none;font-size:10px;font-weight:900;text-transform:uppercase}.pc-search-pagination{margin-top:46px;display:flex;justify-content:space-between;align-items:center;font-size:11px}.pc-search-pagination a{color:#162238;font-weight:850}.visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+@media(max-width:1100px){.pc-search-results{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:800px){.pc-search-page__inner{width:calc(100% - 32px);padding:52px 0 80px}.pc-search-results{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:500px){.pc-search-page__head h1{font-size:clamp(49px,15vw,70px)}.pc-search-page__form{height:58px}.pc-search-page__form button{padding:0 19px}.pc-search-results{grid-template-columns:1fr}}
+{% endstylesheet %}
+
+{% schema %}
+{"name":"P&C search","settings":[{"type":"range","id":"results_per_page","label":"Results per page","min":8,"max":32,"step":4,"default":20}]}
+{% endschema %}

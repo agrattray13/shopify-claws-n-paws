@@ -1,0 +1,59 @@
+<section class="pc-about">
+  <div class="pc-about__hero">
+    <div class="pc-about__hero-copy">
+      <p>{{ section.settings.eyebrow | escape }}</p>
+      <h1>{{ section.settings.heading | escape }}</h1>
+      <div class="pc-about__lead rte">{{ section.settings.lead }}</div>
+    </div>
+    <div class="pc-about__hero-media">
+      {% if section.settings.hero_image != blank %}
+        {{ section.settings.hero_image | image_url: width: 1600 | image_tag: loading: 'eager', widths: '600,900,1200,1600', sizes: '(min-width: 900px) 52vw, 100vw', alt: section.settings.hero_image.alt }}
+      {% else %}{{ 'lifestyle-1' | placeholder_svg_tag }}{% endif %}
+    </div>
+  </div>
+
+  <div class="pc-about__mission">
+    <p>Our mission</p>
+    <h2>{{ section.settings.mission_heading | escape }}</h2>
+    <div class="rte">{{ section.settings.mission_text }}</div>
+  </div>
+
+  <div class="pc-about__values">
+    {% for block in section.blocks %}
+      <article {{ block.shopify_attributes }}>
+        <span>0{{ forloop.index }}</span>
+        <h3>{{ block.settings.heading | escape }}</h3>
+        <p>{{ block.settings.text | escape }}</p>
+      </article>
+    {% endfor %}
+  </div>
+
+  <div class="pc-about__closing">
+    <div>
+      <p>The Paws & Claws promise</p>
+      <h2>Pets give us their best.<br>We help you give some of it back.</h2>
+    </div>
+    <a href="{{ routes.all_products_collection_url }}">Explore the store →</a>
+  </div>
+</section>
+
+{% stylesheet %}
+.pc-about{background:#f7f3ea;color:#162238}.pc-about *{box-sizing:border-box}.pc-about__hero{min-height:680px;display:grid;grid-template-columns:.9fr 1.1fr}.pc-about__hero-copy{padding:90px max(36px,calc((100vw - 1480px)/2)) 90px max(36px,calc((100vw - 1480px)/2));display:flex;flex-direction:column;justify-content:center;background:#162238;color:#fff}.pc-about__hero-copy>p,.pc-about__mission>p,.pc-about__closing p{margin:0 0 14px;color:#d4a65a;font-size:10px;font-weight:900;letter-spacing:.15em;text-transform:uppercase}.pc-about__hero-copy h1{margin:0;font-size:clamp(60px,7vw,106px);line-height:.88;letter-spacing:-.065em}.pc-about__lead{max-width:620px;margin-top:28px;color:rgba(255,255,255,.72);font-size:16px;line-height:1.75}.pc-about__hero-media{min-height:680px;overflow:hidden;background:#e6e1d7}.pc-about__hero-media img,.pc-about__hero-media svg{width:100%;height:100%;object-fit:cover}.pc-about__mission{width:min(1040px,calc(100% - 64px));margin:0 auto;padding:120px 0;text-align:center}.pc-about__mission>p{color:#7e9b81}.pc-about__mission h2{margin:0;font-size:clamp(46px,6vw,82px);line-height:.95;letter-spacing:-.055em}.pc-about__mission .rte{max-width:760px;margin:24px auto 0;color:#626e7b;line-height:1.8}.pc-about__values{width:min(1480px,calc(100% - 64px));margin:0 auto;padding-bottom:110px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.pc-about__values article{min-height:330px;padding:28px;border-radius:26px;background:#fff;display:flex;flex-direction:column}.pc-about__values article:nth-child(even){background:#e7ede5}.pc-about__values span{color:#d4a65a;font-size:10px;font-weight:900}.pc-about__values h3{margin:auto 0 10px;font-size:30px;line-height:1;letter-spacing:-.04em}.pc-about__values p{margin:0;color:#6b7580;font-size:12px;line-height:1.7}.pc-about__closing{background:#d4a65a;padding:80px max(32px,calc((100vw - 1480px)/2));display:flex;align-items:end;justify-content:space-between;gap:40px}.pc-about__closing p{color:#162238}.pc-about__closing h2{margin:0;font-size:clamp(48px,6vw,86px);line-height:.92;letter-spacing:-.06em}.pc-about__closing a{flex:0 0 auto;padding:15px 21px;border-radius:999px;background:#162238;color:#fff;text-decoration:none;font-size:10px;font-weight:900;text-transform:uppercase}
+@media(max-width:900px){.pc-about__hero{grid-template-columns:1fr}.pc-about__hero-copy{min-height:600px;padding:80px 28px}.pc-about__hero-media{min-height:480px}.pc-about__values{grid-template-columns:repeat(2,1fr);width:calc(100% - 32px)}.pc-about__closing{align-items:flex-start;flex-direction:column}}@media(max-width:540px){.pc-about__mission{width:calc(100% - 32px);padding:85px 0}.pc-about__values{grid-template-columns:1fr}.pc-about__values article{min-height:260px}.pc-about__closing{padding:62px 22px}}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name":"P&C about",
+  "settings":[
+    {"type":"text","id":"eyebrow","label":"Eyebrow","default":"Our story"},
+    {"type":"text","id":"heading","label":"Heading","default":"Built for Pets. Created for the People Who Love Them."},
+    {"type":"richtext","id":"lead","label":"Intro","default":"<p>Paws & Claws was created around a simple idea: pets aren't just animals living in our homes—they're family.</p>"},
+    {"type":"image_picker","id":"hero_image","label":"Hero image"},
+    {"type":"text","id":"mission_heading","label":"Mission heading","default":"Make everyday pet care feel a little better."},
+    {"type":"richtext","id":"mission_text","label":"Mission text","default":"<p>Our goal is to make it easier to discover useful, comfortable, fun, and thoughtfully selected products for the animals you love.</p>"}
+  ],
+  "blocks":[{"type":"value","name":"Value","limit":4,"settings":[{"type":"text","id":"heading","label":"Heading","default":"Pet-first thinking"},{"type":"textarea","id":"text","label":"Text","default":"We start with what makes life better for pets and their people."}]}],
+  "presets":[{"name":"P&C about","blocks":[{"type":"value","settings":{"heading":"Why we started","text":"A simpler, warmer way to shop for the animals who make home feel like home."}},{"type":"value","settings":{"heading":"What we look for","text":"Useful, comfortable, fun products with a clear place in everyday pet life."}},{"type":"value","settings":{"heading":"Customer focused","text":"Easy shopping, clear information, secure checkout, and help when you need it."}},{"type":"value","settings":{"heading":"Always pet-first","text":"The best stores remember who the products are really for."}}]}]
+}
+{% endschema %}

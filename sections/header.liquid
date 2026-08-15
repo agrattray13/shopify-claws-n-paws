@@ -1,0 +1,1094 @@
+{% liquid
+  assign logo_render_width = section.settings.logo_width | times: 2
+  assign has_menu = false
+  if section.settings.menu != blank and section.settings.menu.links.size > 0
+    assign has_menu = true
+  endif
+%}
+
+<header
+  class="pc-site-header{% if section.settings.enable_sticky %} pc-site-header--sticky{% endif %}"
+  data-pc-header
+  style="
+    --pc-header-bg: {{ section.settings.header_background }};
+    --pc-header-text: {{ section.settings.header_text }};
+    --pc-accent: {{ section.settings.accent_color }};
+    --pc-announcement-bg: {{ section.settings.announcement_background }};
+    --pc-announcement-text: {{ section.settings.announcement_text_color }};
+    --pc-logo-width: {{ section.settings.logo_width }}px;
+  "
+>
+  {% if section.settings.show_announcement and section.settings.announcement_text != blank %}
+    <div class="pc-announcement" role="region" aria-label="Store announcement">
+      <div class="pc-announcement__inner">
+        {% if section.settings.announcement_link != blank %}
+          <a href="{{ section.settings.announcement_link }}" class="pc-announcement__link">
+            {{ section.settings.announcement_text | escape }}
+            <span aria-hidden="true">→</span>
+          </a>
+        {% else %}
+          <p>{{ section.settings.announcement_text | escape }}</p>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="pc-header-main">
+    <div class="pc-header-main__inner">
+      <div class="pc-header__start">
+        {% if has_menu %}
+          <button
+            class="pc-icon-button pc-mobile-menu-button"
+            type="button"
+            aria-label="Open menu"
+            aria-controls="pc-mobile-menu-{{ section.id }}"
+            aria-expanded="false"
+            data-pc-mobile-open
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </button>
+        {% endif %}
+
+        <a class="pc-brand" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }} home">
+          {% if section.settings.logo != blank %}
+            {{
+              section.settings.logo
+              | image_url: width: logo_render_width
+              | image_tag:
+                class: 'pc-brand__logo',
+                widths: '120,180,240,320,420',
+                loading: 'eager',
+                alt: shop.name
+            }}
+          {% else %}
+            <span class="pc-brand__mark" aria-hidden="true">
+              <svg viewBox="0 0 44 44" focusable="false">
+                <path d="M14.8 20.1c-2.2 0-4-2.2-4-5s1.8-5 4-5 4 2.2 4 5-1.8 5-4 5Zm14.4 0c-2.2 0-4-2.2-4-5s1.8-5 4-5 4 2.2 4 5-1.8 5-4 5ZM9.6 28.2c-2 0-3.6-1.8-3.6-4.1S7.6 20 9.6 20s3.6 1.8 3.6 4.1-1.6 4.1-3.6 4.1Zm24.8 0c-2 0-3.6-1.8-3.6-4.1s1.6-4.1 3.6-4.1 3.6 1.8 3.6 4.1-1.6 4.1-3.6 4.1ZM22 36.5c-5.5 0-9.5-2.7-9.5-6.4 0-2.6 2-4.4 4.3-6.1 1.8-1.3 2.2-4.2 5.2-4.2s3.4 2.9 5.2 4.2c2.3 1.7 4.3 3.5 4.3 6.1 0 3.7-4 6.4-9.5 6.4Z" fill="currentColor"/>
+              </svg>
+            </span>
+            <span class="pc-brand__name">{{ shop.name | escape }}</span>
+          {% endif %}
+        </a>
+      </div>
+
+      {% if has_menu %}
+        <nav class="pc-desktop-nav" aria-label="Primary navigation">
+          <ul class="pc-nav-list" role="list">
+            {% for link in section.settings.menu.links %}
+              <li class="pc-menu-item{% if link.links != blank %} pc-menu-item--has-children{% endif %}" data-pc-menu-item>
+                <div class="pc-menu-item__topline">
+                  <a class="pc-nav-link" href="{{ link.url }}">{{ link.title | escape }}</a>
+                  {% if link.links != blank %}
+                    <button
+                      class="pc-menu-toggle"
+                      type="button"
+                      aria-label="Open {{ link.title | escape }} menu"
+                      aria-controls="pc-mega-{{ section.id }}-{{ forloop.index }}"
+                      aria-expanded="false"
+                      data-pc-mega-toggle
+                    >
+                      <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+                        <path d="m5.5 7.5 4.5 4.5 4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                  {% endif %}
+                </div>
+
+                {% if link.links != blank %}
+                  <div
+                    class="pc-mega"
+                    id="pc-mega-{{ section.id }}-{{ forloop.index }}"
+                    data-pc-mega
+                  >
+                    <div class="pc-mega__inner">
+                      <div class="pc-mega__links">
+                        {% for childlink in link.links %}
+                          <div class="pc-mega__column">
+                            <a class="pc-mega__heading" href="{{ childlink.url }}">{{ childlink.title | escape }}</a>
+                            {% if childlink.links != blank %}
+                              <ul role="list" class="pc-mega__sublist">
+                                {% for grandchildlink in childlink.links %}
+                                  <li>
+                                    <a href="{{ grandchildlink.url }}">{{ grandchildlink.title | escape }}</a>
+                                  </li>
+                                {% endfor %}
+                              </ul>
+                            {% endif %}
+                          </div>
+                        {% endfor %}
+                      </div>
+
+                      {% for block in section.blocks %}
+                        {% if block.type == 'mega_promo' and block.settings.menu_label != blank and block.settings.menu_label == link.title %}
+                          {% if block.settings.link != blank %}
+                            <a
+                              href="{{ block.settings.link }}"
+                              class="pc-mega-promo"
+                              {{ block.shopify_attributes }}
+                            >
+                              <div class="pc-mega-promo__media">
+                                {% if block.settings.image != blank %}
+                                  {{
+                                    block.settings.image
+                                    | image_url: width: 700
+                                    | image_tag:
+                                      loading: 'lazy',
+                                      widths: '280,420,560,700',
+                                      sizes: '(min-width: 990px) 300px, 50vw',
+                                      alt: block.settings.heading
+                                  }}
+                                {% else %}
+                                  {{ 'collection-1' | placeholder_svg_tag: 'pc-mega-promo__placeholder' }}
+                                {% endif %}
+                              </div>
+                              <div class="pc-mega-promo__content">
+                                {% if block.settings.eyebrow != blank %}<span>{{ block.settings.eyebrow | escape }}</span>{% endif %}
+                                {% if block.settings.heading != blank %}<strong>{{ block.settings.heading | escape }}</strong>{% endif %}
+                                <span class="pc-mega-promo__cta">{{ block.settings.link_label | default: 'Shop now' | escape }} →</span>
+                              </div>
+                            </a>
+                          {% endif %}
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                  </div>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        </nav>
+      {% endif %}
+
+      <div class="pc-header-actions">
+        <a
+          class="pc-icon-button"
+          href="{{ routes.search_url }}"
+          aria-label="Search"
+          aria-controls="pc-search-drawer-{{ section.id }}"
+          data-pc-search-open
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="10.8" cy="10.8" r="6.8" fill="none" stroke="currentColor" stroke-width="1.8"/>
+            <path d="m16 16 4.3 4.3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </a>
+
+        {% if shop.customer_accounts_enabled %}
+          <a class="pc-icon-button pc-account-link" href="{{ routes.account_url }}" aria-label="Customer account">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="8" r="3.6" fill="none" stroke="currentColor" stroke-width="1.7"/>
+              <path d="M5.6 20c.5-4.2 3-6.3 6.4-6.3s5.9 2.1 6.4 6.3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </a>
+        {% endif %}
+
+        <a
+          class="pc-icon-button pc-cart-link"
+          href="{{ routes.cart_url }}"
+          aria-label="Shopping cart, {{ cart.item_count }} items"
+          aria-controls="pc-cart-drawer-{{ section.id }}"
+          data-pc-cart-open
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M6.3 8.5h11.4l-.7 11H7l-.7-11Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            <path d="M9 9V7a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          <span class="pc-cart-count{% if cart.item_count == 0 %} is-hidden{% endif %}" data-pc-cart-count>{{ cart.item_count }}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  {% if has_menu %}
+    <div class="pc-drawer-shell" id="pc-mobile-menu-{{ section.id }}" hidden data-pc-mobile-drawer>
+      <button class="pc-drawer-backdrop" type="button" aria-label="Close menu" data-pc-close></button>
+      <aside class="pc-side-drawer pc-mobile-drawer" role="dialog" aria-modal="true" aria-label="Navigation menu">
+        <div class="pc-drawer-header">
+          <span class="pc-drawer-title">Menu</span>
+          <button class="pc-icon-button" type="button" aria-label="Close menu" data-pc-close>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+
+        <nav class="pc-mobile-nav" aria-label="Mobile navigation">
+          <ul role="list">
+            {% for link in section.settings.menu.links %}
+              <li class="pc-mobile-item">
+                <div class="pc-mobile-item__row">
+                  <a href="{{ link.url }}">{{ link.title | escape }}</a>
+                  {% if link.links != blank %}
+                    <button
+                      type="button"
+                      aria-label="Show {{ link.title | escape }} links"
+                      aria-expanded="false"
+                      aria-controls="pc-mobile-submenu-{{ section.id }}-{{ forloop.index }}"
+                      data-pc-mobile-submenu-toggle
+                    >
+                      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5.5 7.5 4.5 4.5 4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    </button>
+                  {% endif %}
+                </div>
+                {% if link.links != blank %}
+                  <div class="pc-mobile-submenu" id="pc-mobile-submenu-{{ section.id }}-{{ forloop.index }}" hidden>
+                    {% for childlink in link.links %}
+                      <div class="pc-mobile-subgroup">
+                        <a class="pc-mobile-subgroup__title" href="{{ childlink.url }}">{{ childlink.title | escape }}</a>
+                        {% if childlink.links != blank %}
+                          <ul role="list">
+                            {% for grandchildlink in childlink.links %}
+                              <li><a href="{{ grandchildlink.url }}">{{ grandchildlink.title | escape }}</a></li>
+                            {% endfor %}
+                          </ul>
+                        {% endif %}
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        </nav>
+
+        <div class="pc-mobile-drawer__footer">
+          <a href="{{ routes.search_url }}" data-pc-search-open>Search the store</a>
+          {% if shop.customer_accounts_enabled %}<a href="{{ routes.account_url }}">My account</a>{% endif %}
+          <a href="{{ routes.cart_url }}" data-pc-cart-open>Shopping cart</a>
+        </div>
+      </aside>
+    </div>
+  {% endif %}
+
+  <div class="pc-drawer-shell" id="pc-search-drawer-{{ section.id }}" hidden data-pc-search-drawer>
+    <button class="pc-drawer-backdrop" type="button" aria-label="Close search" data-pc-close></button>
+    <aside class="pc-search-drawer" role="dialog" aria-modal="true" aria-label="Search store">
+      <div class="pc-drawer-header">
+        <div>
+          <span class="pc-drawer-kicker">Find something they’ll love</span>
+          <span class="pc-drawer-title">Search Paws &amp; Claws</span>
+        </div>
+        <button class="pc-icon-button" type="button" aria-label="Close search" data-pc-close>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+
+      <form class="pc-search-form" action="{{ routes.search_url }}" method="get" role="search" data-pc-search-form>
+        <label class="visually-hidden" for="pc-search-input-{{ section.id }}">Search products</label>
+        <input
+          id="pc-search-input-{{ section.id }}"
+          type="search"
+          name="q"
+          value=""
+          placeholder="Search toys, beds, collars, treats..."
+          autocomplete="off"
+          autocorrect="off"
+          spellcheck="false"
+          data-pc-search-input
+        >
+        <input type="hidden" name="type" value="product">
+        <button type="submit" aria-label="Submit search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4.3 4.3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </form>
+
+      <div class="pc-predictive" data-pc-predictive aria-live="polite"></div>
+    </aside>
+  </div>
+
+  <div
+    class="pc-drawer-shell"
+    id="pc-cart-drawer-{{ section.id }}"
+    hidden
+    data-pc-cart-drawer
+    data-currency="{{ shop.currency | escape }}"
+    data-locale="{{ request.locale.iso_code | escape }}"
+    data-free-shipping-threshold="{{ section.settings.free_shipping_threshold }}"
+  >
+    <button class="pc-drawer-backdrop" type="button" aria-label="Close cart" data-pc-close></button>
+    <aside class="pc-side-drawer pc-cart-drawer" role="dialog" aria-modal="true" aria-label="Shopping cart">
+      <div class="pc-drawer-header">
+        <div>
+          <span class="pc-drawer-kicker">Your picks</span>
+          <span class="pc-drawer-title">Shopping cart</span>
+        </div>
+        <button class="pc-icon-button" type="button" aria-label="Close cart" data-pc-close>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+
+      {% if section.settings.free_shipping_threshold > 0 %}
+        <div class="pc-shipping-progress" data-pc-shipping-progress>
+          <p data-pc-shipping-message>Checking free shipping progress…</p>
+          <div class="pc-shipping-progress__track" aria-hidden="true"><span data-pc-shipping-bar></span></div>
+        </div>
+      {% endif %}
+
+      <div class="pc-cart-content" data-pc-cart-content aria-live="polite">
+        <div class="pc-cart-loading">Loading your cart…</div>
+      </div>
+
+      <div class="pc-cart-footer" data-pc-cart-footer hidden>
+        <div class="pc-cart-subtotal">
+          <span>Subtotal</span>
+          <strong data-pc-cart-subtotal></strong>
+        </div>
+        <p>Taxes and shipping calculated at checkout.</p>
+        <form action="{{ routes.cart_url }}" method="post">
+          <button class="pc-checkout-button" type="submit" name="checkout">Secure checkout</button>
+        </form>
+        <a class="pc-view-cart" href="{{ routes.cart_url }}">View full cart</a>
+      </div>
+    </aside>
+  </div>
+</header>
+
+{% stylesheet %}
+  .pc-site-header,
+  .pc-site-header * { box-sizing: border-box; }
+  .pc-site-header { position: relative; z-index: 40; color: var(--pc-header-text); font-family: inherit; }
+  .pc-site-header--sticky { position: sticky; top: 0; }
+  .pc-site-header a { color: inherit; text-decoration: none; }
+  .pc-site-header button,
+  .pc-site-header input { font: inherit; }
+  .pc-site-header button { color: inherit; }
+  .pc-site-header ul { margin: 0; padding: 0; list-style: none; }
+  .pc-site-header .visually-hidden { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+  .pc-announcement { background: var(--pc-announcement-bg); color: var(--pc-announcement-text); border-bottom: 1px solid rgba(255,255,255,.1); }
+  .pc-announcement__inner { max-width: 1520px; min-height: 34px; margin: 0 auto; padding: 7px 24px; display: flex; align-items: center; justify-content: center; text-align: center; }
+  .pc-announcement p { margin: 0; font-size: 11px; font-weight: 750; letter-spacing: .08em; }
+  .pc-announcement__link { display: inline-flex; gap: 10px; align-items: center; font-size: 11px; font-weight: 750; letter-spacing: .08em; }
+  .pc-announcement__link span { transition: transform .2s ease; }
+  .pc-announcement__link:hover span { transform: translateX(4px); }
+
+  .pc-header-main { position: relative; background: color-mix(in srgb, var(--pc-header-bg) 96%, transparent); border-bottom: 1px solid color-mix(in srgb, var(--pc-header-text) 12%, transparent); backdrop-filter: blur(18px); }
+  .pc-header-main__inner { max-width: 1520px; min-height: 82px; margin: 0 auto; padding: 0 32px; display: grid; grid-template-columns: minmax(220px, 1fr) auto minmax(220px, 1fr); align-items: center; gap: 28px; }
+  .pc-header__start { display: flex; align-items: center; min-width: 0; }
+  .pc-brand { display: inline-flex; align-items: center; gap: 10px; min-width: 0; }
+  .pc-brand__logo { display: block; width: min(var(--pc-logo-width), 100%); height: auto; max-height: 58px; object-fit: contain; object-position: left center; }
+  .pc-brand__mark { width: 38px; height: 38px; display: inline-grid; place-items: center; color: var(--pc-accent); flex: 0 0 auto; }
+  .pc-brand__mark svg { width: 100%; height: 100%; }
+  .pc-brand__name { max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: clamp(18px, 1.45vw, 26px); font-weight: 850; letter-spacing: -.04em; }
+
+  .pc-desktop-nav { align-self: stretch; display: flex; align-items: stretch; }
+  .pc-nav-list { display: flex; align-items: stretch; justify-content: center; gap: clamp(10px, 1.5vw, 28px); }
+  .pc-menu-item { display: flex; align-items: stretch; position: static; }
+  .pc-menu-item__topline { display: flex; align-items: center; gap: 1px; position: relative; }
+  .pc-nav-link { min-height: 82px; display: flex; align-items: center; font-size: 12px; font-weight: 760; letter-spacing: .025em; white-space: nowrap; position: relative; }
+  .pc-nav-link::after { content: ''; position: absolute; left: 0; right: 0; bottom: 19px; height: 2px; background: var(--pc-accent); transform: scaleX(0); transform-origin: center; transition: transform .2s ease; }
+  .pc-nav-link:hover::after,
+  .pc-menu-item:focus-within .pc-nav-link::after,
+  .pc-menu-item.is-open .pc-nav-link::after { transform: scaleX(1); }
+  .pc-menu-toggle { width: 24px; height: 32px; margin-right: -7px; border: 0; background: transparent; display: grid; place-items: center; cursor: pointer; border-radius: 999px; }
+  .pc-menu-toggle:hover { background: color-mix(in srgb, var(--pc-header-text) 8%, transparent); }
+  .pc-menu-toggle svg { width: 15px; transition: transform .2s ease; }
+  .pc-menu-item.is-open .pc-menu-toggle svg { transform: rotate(180deg); }
+
+  .pc-mega { position: absolute; top: 100%; left: 0; right: 0; background: var(--pc-header-bg); border-bottom: 1px solid color-mix(in srgb, var(--pc-header-text) 12%, transparent); box-shadow: 0 28px 55px rgba(17,34,56,.14); opacity: 0; visibility: hidden; transform: translateY(-8px); transition: opacity .18s ease, transform .18s ease, visibility .18s ease; pointer-events: none; }
+  .pc-menu-item:hover > .pc-mega,
+  .pc-menu-item:focus-within > .pc-mega,
+  .pc-menu-item.is-open > .pc-mega { opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto; }
+  .pc-mega__inner { max-width: 1440px; margin: 0 auto; padding: 34px 36px 40px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 310px); gap: 44px; }
+  .pc-mega__links { display: grid; grid-template-columns: repeat(4, minmax(130px, 1fr)); gap: 34px; align-content: start; }
+  .pc-mega__heading { display: inline-block; margin-bottom: 12px; font-size: 13px; font-weight: 850; }
+  .pc-mega__heading:hover { color: var(--pc-accent); }
+  .pc-mega__sublist { display: grid; gap: 8px; }
+  .pc-mega__sublist a { color: color-mix(in srgb, var(--pc-header-text) 70%, transparent); font-size: 12px; line-height: 1.45; }
+  .pc-mega__sublist a:hover { color: var(--pc-accent); }
+  .pc-mega-promo { min-height: 245px; align-self: stretch; display: grid; grid-template-rows: minmax(150px, 1fr) auto; overflow: hidden; background: color-mix(in srgb, var(--pc-accent) 10%, var(--pc-header-bg)); border-radius: 18px; border: 1px solid color-mix(in srgb, var(--pc-header-text) 10%, transparent); }
+  .pc-mega-promo__media { overflow: hidden; min-height: 150px; }
+  .pc-mega-promo__media img,
+  .pc-mega-promo__placeholder { width: 100%; height: 100%; display: block; object-fit: cover; transition: transform .35s ease; }
+  .pc-mega-promo:hover .pc-mega-promo__media img { transform: scale(1.035); }
+  .pc-mega-promo__content { padding: 17px 18px 19px; display: grid; gap: 5px; }
+  .pc-mega-promo__content > span:first-child { color: var(--pc-accent); font-size: 9px; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; }
+  .pc-mega-promo__content strong { font-size: 18px; letter-spacing: -.025em; }
+  .pc-mega-promo__cta { margin-top: 5px; font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+
+  .pc-header-actions { justify-self: end; display: flex; align-items: center; gap: 4px; }
+  .pc-icon-button { width: 42px; height: 42px; padding: 0; border: 0; border-radius: 999px; background: transparent; display: inline-grid; place-items: center; cursor: pointer; position: relative; transition: background .2s ease, color .2s ease, transform .2s ease; }
+  .pc-icon-button:hover { background: color-mix(in srgb, var(--pc-header-text) 8%, transparent); color: var(--pc-accent); }
+  .pc-icon-button:active { transform: scale(.96); }
+  .pc-icon-button svg { width: 22px; height: 22px; }
+  .pc-cart-count { position: absolute; top: 3px; right: 0; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; display: grid; place-items: center; background: var(--pc-accent); color: #fff; font-size: 9px; font-weight: 850; }
+  .pc-cart-count.is-hidden { display: none; }
+  .pc-mobile-menu-button { display: none; }
+
+  .pc-drawer-shell[hidden] { display: none !important; }
+  .pc-drawer-shell { position: fixed; inset: 0; z-index: 90; }
+  .pc-drawer-backdrop { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: rgba(13,22,34,.48); backdrop-filter: blur(5px); cursor: pointer; }
+  .pc-side-drawer { position: absolute; top: 0; right: 0; width: min(440px, 94vw); height: 100%; background: #fff; color: #162238; box-shadow: -22px 0 60px rgba(22,34,56,.2); display: flex; flex-direction: column; animation: pcDrawerIn .22s ease both; }
+  .pc-drawer-header { min-height: 82px; padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; gap: 22px; border-bottom: 1px solid #e7e6e1; }
+  .pc-drawer-kicker { display: block; margin-bottom: 3px; color: #7e9b81; font-size: 9px; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; }
+  .pc-drawer-title { display: block; font-size: 21px; font-weight: 850; letter-spacing: -.035em; }
+
+  .pc-search-drawer { position: absolute; top: 0; left: 50%; width: min(860px, 100%); max-height: min(760px, 92vh); transform: translateX(-50%); overflow: auto; background: #fff; color: #162238; box-shadow: 0 26px 80px rgba(22,34,56,.24); animation: pcSearchIn .22s ease both; }
+  .pc-search-form { margin: 28px 28px 16px; min-height: 58px; display: grid; grid-template-columns: 1fr 54px; border: 1px solid #d9d9d3; border-radius: 999px; overflow: hidden; background: #faf9f5; }
+  .pc-search-form:focus-within { border-color: #7e9b81; box-shadow: 0 0 0 3px rgba(126,155,129,.13); }
+  .pc-search-form input { min-width: 0; padding: 0 22px; border: 0; outline: 0; background: transparent; color: #162238; font-size: 15px; }
+  .pc-search-form button { border: 0; background: transparent; display: grid; place-items: center; cursor: pointer; }
+  .pc-search-form button:hover { color: #7e9b81; }
+  .pc-search-form svg { width: 22px; }
+  .pc-predictive { padding: 0 28px 32px; }
+  .pc-predictive__status { padding: 28px 0; color: #687383; font-size: 13px; }
+  .pc-predictive__heading { margin: 24px 0 12px; font-size: 10px; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; color: #7e9b81; }
+  .pc-predictive__grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+  .pc-predictive-card { min-width: 0; padding: 10px; display: grid; grid-template-columns: 64px minmax(0,1fr); gap: 12px; align-items: center; border: 1px solid #ecebe6; border-radius: 14px; background: #fff; }
+  .pc-predictive-card:hover { border-color: #c7d5c9; background: #f8faf7; }
+  .pc-predictive-card__image { width: 64px; height: 64px; border-radius: 10px; overflow: hidden; background: #f2f1ec; }
+  .pc-predictive-card__image img { width: 100%; height: 100%; display: block; object-fit: cover; }
+  .pc-predictive-card strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
+  .pc-predictive-card span { display: block; margin-top: 4px; color: #7a8491; font-size: 10px; }
+  .pc-predictive-links { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pc-predictive-pill { padding: 9px 13px; border-radius: 999px; background: #f4f3ee; color: #334052; font-size: 11px; font-weight: 700; }
+  .pc-predictive-pill:hover { background: #eaf0e9; color: #607b64; }
+  .pc-predictive__all { margin-top: 18px; padding: 13px 16px; display: flex; align-items: center; justify-content: space-between; border-radius: 12px; background: #162238; color: #fff !important; font-size: 11px; font-weight: 800; }
+
+  .pc-shipping-progress { padding: 16px 24px 18px; border-bottom: 1px solid #eee; background: #f7f3ea; }
+  .pc-shipping-progress p { margin: 0 0 9px; font-size: 11px; font-weight: 720; }
+  .pc-shipping-progress__track { height: 6px; overflow: hidden; border-radius: 999px; background: #e2ded3; }
+  .pc-shipping-progress__track span { display: block; width: 0; height: 100%; border-radius: inherit; background: #7e9b81; transition: width .28s ease; }
+  .pc-cart-content { flex: 1 1 auto; overflow-y: auto; padding: 20px 24px; }
+  .pc-cart-loading,
+  .pc-cart-empty { min-height: 240px; display: grid; place-items: center; text-align: center; color: #75808e; font-size: 13px; }
+  .pc-cart-empty__inner { display: grid; justify-items: center; gap: 14px; }
+  .pc-cart-empty svg { width: 54px; color: #d4a65a; }
+  .pc-cart-empty a { padding: 12px 17px; border-radius: 999px; background: #162238; color: #fff; font-size: 11px; font-weight: 800; }
+  .pc-cart-items { display: grid; gap: 18px; }
+  .pc-cart-item { display: grid; grid-template-columns: 88px minmax(0,1fr); gap: 14px; padding-bottom: 18px; border-bottom: 1px solid #efeee9; }
+  .pc-cart-item__image { width: 88px; height: 96px; overflow: hidden; border-radius: 12px; background: #f4f3ee; }
+  .pc-cart-item__image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .pc-cart-item__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+  .pc-cart-item__title { font-size: 12px; font-weight: 820; line-height: 1.35; }
+  .pc-cart-item__variant { margin: 4px 0 0; color: #7d8793; font-size: 10px; }
+  .pc-cart-item__price { font-size: 12px; font-weight: 780; white-space: nowrap; }
+  .pc-cart-item__bottom { margin-top: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .pc-qty { width: 112px; height: 34px; display: grid; grid-template-columns: 34px 1fr 34px; border: 1px solid #dbdad4; border-radius: 999px; overflow: hidden; }
+  .pc-qty button { border: 0; background: transparent; cursor: pointer; font-size: 16px; }
+  .pc-qty button:hover { background: #f2f4ef; }
+  .pc-qty input { min-width: 0; width: 100%; border: 0; outline: 0; background: transparent; text-align: center; font-size: 11px; font-weight: 760; -moz-appearance: textfield; }
+  .pc-qty input::-webkit-outer-spin-button,
+  .pc-qty input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .pc-remove { border: 0; background: transparent; color: #7b8490; padding: 4px 0; cursor: pointer; font-size: 10px; text-decoration: underline; text-underline-offset: 3px; }
+  .pc-remove:hover { color: #b14f4f; }
+  .pc-cart-footer { flex: 0 0 auto; padding: 20px 24px 24px; border-top: 1px solid #e9e8e2; background: #fff; }
+  .pc-cart-subtotal { display: flex; align-items: center; justify-content: space-between; gap: 20px; font-size: 13px; }
+  .pc-cart-subtotal strong { font-size: 17px; }
+  .pc-cart-footer > p { margin: 7px 0 15px; color: #7e8791; font-size: 10px; }
+  .pc-checkout-button { width: 100%; min-height: 50px; border: 0; border-radius: 999px; background: #162238; color: #fff !important; cursor: pointer; font-size: 11px; font-weight: 850; letter-spacing: .05em; text-transform: uppercase; }
+  .pc-checkout-button:hover { background: #243653; }
+  .pc-view-cart { margin-top: 12px; display: block; text-align: center; color: #65705f !important; font-size: 10px; font-weight: 800; text-decoration: underline !important; text-underline-offset: 4px; }
+
+  .pc-mobile-drawer { left: 0; right: auto; animation-name: pcDrawerInLeft; }
+  .pc-mobile-nav { overflow-y: auto; padding: 8px 24px 22px; }
+  .pc-mobile-item { border-bottom: 1px solid #ecebe6; }
+  .pc-mobile-item__row { min-height: 56px; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px; }
+  .pc-mobile-item__row > a { font-size: 14px; font-weight: 820; }
+  .pc-mobile-item__row > button { width: 38px; height: 38px; border: 0; border-radius: 999px; background: #f5f4ef; display: grid; place-items: center; cursor: pointer; }
+  .pc-mobile-item__row > button svg { width: 17px; transition: transform .2s ease; }
+  .pc-mobile-item__row > button[aria-expanded="true"] svg { transform: rotate(180deg); }
+  .pc-mobile-submenu { padding: 0 0 18px 12px; }
+  .pc-mobile-subgroup + .pc-mobile-subgroup { margin-top: 16px; }
+  .pc-mobile-subgroup__title { display: block; margin-bottom: 8px; font-size: 11px; font-weight: 850; color: #607b64 !important; }
+  .pc-mobile-subgroup ul { display: grid; gap: 7px; }
+  .pc-mobile-subgroup li a { color: #687381; font-size: 11px; }
+  .pc-mobile-drawer__footer { margin-top: auto; padding: 20px 24px 28px; display: grid; gap: 8px; border-top: 1px solid #ecebe6; background: #f7f3ea; }
+  .pc-mobile-drawer__footer a { padding: 9px 0; font-size: 11px; font-weight: 760; }
+
+  body.pc-drawer-open { overflow: hidden; }
+
+  @keyframes pcDrawerIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+  @keyframes pcDrawerInLeft { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+  @keyframes pcSearchIn { from { opacity: 0; transform: translate(-50%, -24px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+  @media (max-width: 1180px) {
+    .pc-header-main__inner { grid-template-columns: minmax(180px, 1fr) auto minmax(180px, 1fr); gap: 18px; padding-inline: 24px; }
+    .pc-nav-list { gap: 11px; }
+    .pc-nav-link { font-size: 11px; }
+    .pc-account-link { display: none; }
+  }
+
+  @media (max-width: 989px) {
+    .pc-header-main__inner { min-height: 72px; grid-template-columns: 1fr auto; padding-inline: 18px; }
+    .pc-header__start { gap: 5px; }
+    .pc-mobile-menu-button { display: inline-grid; margin-left: -8px; }
+    .pc-desktop-nav { display: none; }
+    .pc-brand__name { max-width: 190px; font-size: 19px; }
+    .pc-brand__mark { width: 33px; height: 33px; }
+    .pc-brand__logo { max-height: 48px; }
+    .pc-header-actions { gap: 0; }
+    .pc-account-link { display: inline-grid; }
+  }
+
+  @media (max-width: 640px) {
+    .pc-announcement__inner { min-height: 31px; padding-inline: 14px; }
+    .pc-announcement p,
+    .pc-announcement__link { font-size: 9px; letter-spacing: .045em; }
+    .pc-header-main__inner { min-height: 66px; padding-inline: 12px; }
+    .pc-brand__name { max-width: 145px; font-size: 16px; }
+    .pc-brand__mark { width: 30px; height: 30px; }
+    .pc-icon-button { width: 38px; height: 38px; }
+    .pc-icon-button svg { width: 20px; height: 20px; }
+    .pc-account-link { display: none; }
+    .pc-cart-count { top: 1px; right: -1px; }
+    .pc-search-drawer { width: 100%; max-height: 100%; height: 100%; }
+    .pc-search-form { margin: 20px 18px 12px; min-height: 54px; }
+    .pc-predictive { padding: 0 18px 26px; }
+    .pc-predictive__grid { grid-template-columns: 1fr; }
+    .pc-side-drawer { width: min(390px, 96vw); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pc-site-header *,
+    .pc-site-header *::before,
+    .pc-site-header *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (() => {
+    const headers = document.querySelectorAll('[data-pc-header]');
+
+    headers.forEach((header) => {
+      if (header.dataset.pcReady === 'true') return;
+      header.dataset.pcReady = 'true';
+
+      const root = window.Shopify?.routes?.root || '/';
+      const cartDrawer = header.querySelector('[data-pc-cart-drawer]');
+      const cartContent = header.querySelector('[data-pc-cart-content]');
+      const cartFooter = header.querySelector('[data-pc-cart-footer]');
+      const cartSubtotal = header.querySelector('[data-pc-cart-subtotal]');
+      const cartCount = header.querySelector('[data-pc-cart-count]');
+      const searchDrawer = header.querySelector('[data-pc-search-drawer]');
+      const searchInput = header.querySelector('[data-pc-search-input]');
+      const predictive = header.querySelector('[data-pc-predictive]');
+      const mobileDrawer = header.querySelector('[data-pc-mobile-drawer]');
+      const mobileOpen = header.querySelector('[data-pc-mobile-open]');
+      let lastTrigger = null;
+      let searchTimer = null;
+      let searchController = null;
+
+      const currency = cartDrawer?.dataset.currency || 'USD';
+      const locale = cartDrawer?.dataset.locale || document.documentElement.lang || 'en';
+      const freeShippingThreshold = Number(cartDrawer?.dataset.freeShippingThreshold || 0) * 100;
+
+      const money = (cents) => {
+        try {
+          return new Intl.NumberFormat(locale, { style: 'currency', currency }).format((Number(cents) || 0) / 100);
+        } catch (_error) {
+          return `${currency} ${((Number(cents) || 0) / 100).toFixed(2)}`;
+        }
+      };
+
+      const escapeHtml = (value = '') => String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+
+      const closeMegaMenus = (except = null) => {
+        header.querySelectorAll('[data-pc-menu-item].is-open').forEach((item) => {
+          if (item === except) return;
+          item.classList.remove('is-open');
+          item.querySelector('[data-pc-mega-toggle]')?.setAttribute('aria-expanded', 'false');
+        });
+      };
+
+      header.querySelectorAll('[data-pc-mega-toggle]').forEach((toggle) => {
+        toggle.addEventListener('click', (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          const item = toggle.closest('[data-pc-menu-item]');
+          const opening = !item.classList.contains('is-open');
+          closeMegaMenus(item);
+          item.classList.toggle('is-open', opening);
+          toggle.setAttribute('aria-expanded', opening ? 'true' : 'false');
+        });
+      });
+
+      const closeDrawer = (drawer, restoreFocus = true) => {
+        if (!drawer || drawer.hidden) return;
+        drawer.hidden = true;
+        document.body.classList.remove('pc-drawer-open');
+        if (drawer === mobileDrawer && mobileOpen) mobileOpen.setAttribute('aria-expanded', 'false');
+        if (restoreFocus && lastTrigger) lastTrigger.focus({ preventScroll: true });
+      };
+
+      const closeAllDrawers = (restoreFocus = true) => {
+        [mobileDrawer, searchDrawer, cartDrawer].forEach((drawer) => {
+          if (drawer && !drawer.hidden) drawer.hidden = true;
+        });
+        document.body.classList.remove('pc-drawer-open');
+        if (mobileOpen) mobileOpen.setAttribute('aria-expanded', 'false');
+        if (restoreFocus && lastTrigger) lastTrigger.focus({ preventScroll: true });
+      };
+
+      const openDrawer = (drawer, trigger) => {
+        if (!drawer) return;
+        closeAllDrawers(false);
+        closeMegaMenus();
+        lastTrigger = trigger || null;
+        drawer.hidden = false;
+        document.body.classList.add('pc-drawer-open');
+        const focusTarget = drawer.querySelector('input, button:not(.pc-drawer-backdrop), a[href]');
+        requestAnimationFrame(() => focusTarget?.focus({ preventScroll: true }));
+      };
+
+      header.querySelectorAll('[data-pc-close]').forEach((button) => {
+        button.addEventListener('click', () => closeDrawer(button.closest('.pc-drawer-shell')));
+      });
+
+      if (mobileOpen && mobileDrawer) {
+        mobileOpen.addEventListener('click', () => {
+          openDrawer(mobileDrawer, mobileOpen);
+          mobileOpen.setAttribute('aria-expanded', 'true');
+        });
+      }
+
+      header.querySelectorAll('[data-pc-mobile-submenu-toggle]').forEach((toggle) => {
+        toggle.addEventListener('click', () => {
+          const submenu = document.getElementById(toggle.getAttribute('aria-controls'));
+          if (!submenu) return;
+          const opening = submenu.hidden;
+          submenu.hidden = !opening;
+          toggle.setAttribute('aria-expanded', opening ? 'true' : 'false');
+        });
+      });
+
+      header.querySelectorAll('[data-pc-search-open]').forEach((trigger) => {
+        trigger.addEventListener('click', (event) => {
+          if (!searchDrawer) return;
+          event.preventDefault();
+          openDrawer(searchDrawer, trigger);
+          requestAnimationFrame(() => searchInput?.focus());
+        });
+      });
+
+      const renderPredictive = (data, query) => {
+        if (!predictive) return;
+        const results = data?.resources?.results || {};
+        const products = Array.isArray(results.products) ? results.products.slice(0, 6) : [];
+        const collections = Array.isArray(results.collections) ? results.collections.slice(0, 5) : [];
+        const pages = Array.isArray(results.pages) ? results.pages.slice(0, 4) : [];
+
+        if (!products.length && !collections.length && !pages.length) {
+          predictive.innerHTML = `<div class="pc-predictive__status">No matches yet. Try another search.</div>`;
+          return;
+        }
+
+        const productMarkup = products.length ? `
+          <div class="pc-predictive__heading">Products</div>
+          <div class="pc-predictive__grid">
+            ${products.map((product) => {
+              const imageUrl = product.featured_image?.url || product.image || '';
+              const image = imageUrl
+                ? `<div class="pc-predictive-card__image"><img src="${escapeHtml(imageUrl)}&width=160" alt="" loading="lazy"></div>`
+                : '<div class="pc-predictive-card__image"></div>';
+              return `
+                <a class="pc-predictive-card" href="${escapeHtml(product.url)}">
+                  ${image}
+                  <div>
+                    <strong>${escapeHtml(product.title)}</strong>
+                    <span>${escapeHtml(product.type || 'Product')}</span>
+                  </div>
+                </a>`;
+            }).join('')}
+          </div>` : '';
+
+        const collectionMarkup = collections.length ? `
+          <div class="pc-predictive__heading">Collections</div>
+          <div class="pc-predictive-links">
+            ${collections.map((collection) => `<a class="pc-predictive-pill" href="${escapeHtml(collection.url)}">${escapeHtml(collection.title)}</a>`).join('')}
+          </div>` : '';
+
+        const pageMarkup = pages.length ? `
+          <div class="pc-predictive__heading">Pages</div>
+          <div class="pc-predictive-links">
+            ${pages.map((page) => `<a class="pc-predictive-pill" href="${escapeHtml(page.url)}">${escapeHtml(page.title)}</a>`).join('')}
+          </div>` : '';
+
+        predictive.innerHTML = `${productMarkup}${collectionMarkup}${pageMarkup}
+          <a class="pc-predictive__all" href="${root}search?q=${encodeURIComponent(query)}">
+            <span>See all results for “${escapeHtml(query)}”</span><span aria-hidden="true">→</span>
+          </a>`;
+      };
+
+      const predictiveSearch = async (query) => {
+        if (!predictive) return;
+        if (!query) {
+          predictive.innerHTML = '';
+          return;
+        }
+
+        predictive.innerHTML = '<div class="pc-predictive__status">Searching…</div>';
+        searchController?.abort();
+        searchController = new AbortController();
+
+        const endpoint = `${root}search/suggest.json?q=${encodeURIComponent(query)}&resources[type]=product,collection,page&resources[limit]=8&resources[options][unavailable_products]=hide`;
+
+        try {
+          const response = await fetch(endpoint, { signal: searchController.signal, headers: { Accept: 'application/json' } });
+          if (!response.ok) throw new Error(`Search request failed: ${response.status}`);
+          const data = await response.json();
+          renderPredictive(data, query);
+        } catch (error) {
+          if (error.name === 'AbortError') return;
+          predictive.innerHTML = `<div class="pc-predictive__status">Suggestions are unavailable. Press Enter to search the store.</div>`;
+        }
+      };
+
+      if (searchInput && predictive) {
+        searchInput.addEventListener('input', () => {
+          clearTimeout(searchTimer);
+          const query = searchInput.value.trim();
+          if (!query) {
+            predictive.innerHTML = '';
+            return;
+          }
+          searchTimer = setTimeout(() => predictiveSearch(query), 220);
+        });
+      }
+
+      const updateShippingProgress = (cart) => {
+        const progress = header.querySelector('[data-pc-shipping-progress]');
+        if (!progress || freeShippingThreshold <= 0) return;
+        const message = progress.querySelector('[data-pc-shipping-message]');
+        const bar = progress.querySelector('[data-pc-shipping-bar]');
+        const remaining = Math.max(0, freeShippingThreshold - cart.total_price);
+        const percent = Math.min(100, Math.max(0, (cart.total_price / freeShippingThreshold) * 100));
+        bar.style.width = `${percent}%`;
+        message.textContent = remaining <= 0
+          ? 'Free shipping unlocked — nice pick!'
+          : `You’re ${money(remaining)} away from free shipping.`;
+      };
+
+      const renderCart = (cart) => {
+        if (!cartContent || !cartFooter) return;
+        if (cartCount) {
+          cartCount.textContent = cart.item_count;
+          cartCount.classList.toggle('is-hidden', cart.item_count === 0);
+        }
+
+        updateShippingProgress(cart);
+
+        if (!cart.items.length) {
+          cartContent.innerHTML = `
+            <div class="pc-cart-empty">
+              <div class="pc-cart-empty__inner">
+                <svg viewBox="0 0 44 44" aria-hidden="true"><path d="M14.8 20.1c-2.2 0-4-2.2-4-5s1.8-5 4-5 4 2.2 4 5-1.8 5-4 5Zm14.4 0c-2.2 0-4-2.2-4-5s1.8-5 4-5 4 2.2 4 5-1.8 5-4 5ZM9.6 28.2c-2 0-3.6-1.8-3.6-4.1S7.6 20 9.6 20s3.6 1.8 3.6 4.1-1.6 4.1-3.6 4.1Zm24.8 0c-2 0-3.6-1.8-3.6-4.1s1.6-4.1 3.6-4.1 3.6 1.8 3.6 4.1-1.6 4.1-3.6 4.1ZM22 36.5c-5.5 0-9.5-2.7-9.5-6.4 0-2.6 2-4.4 4.3-6.1 1.8-1.3 2.2-4.2 5.2-4.2s3.4 2.9 5.2 4.2c2.3 1.7 4.3 3.5 4.3 6.1 0 3.7-4 6.4-9.5 6.4Z" fill="currentColor"/></svg>
+                <strong>Your cart is ready for a new favorite.</strong>
+                <a href="${root}collections/all">Shop all products</a>
+              </div>
+            </div>`;
+          cartFooter.hidden = true;
+          return;
+        }
+
+        cartContent.innerHTML = `<div class="pc-cart-items">${cart.items.map((item, index) => {
+          const image = item.featured_image?.url || item.image || '';
+          const imageMarkup = image
+            ? `<a class="pc-cart-item__image" href="${escapeHtml(item.url)}"><img src="${escapeHtml(image)}&width=220" alt="${escapeHtml(item.featured_image?.alt || item.product_title || '')}" loading="lazy"></a>`
+            : `<a class="pc-cart-item__image" href="${escapeHtml(item.url)}"></a>`;
+          const variant = item.variant_title && item.variant_title !== 'Default Title'
+            ? `<p class="pc-cart-item__variant">${escapeHtml(item.variant_title)}</p>` : '';
+          return `
+            <article class="pc-cart-item" data-line="${index + 1}">
+              ${imageMarkup}
+              <div>
+                <div class="pc-cart-item__top">
+                  <div>
+                    <a class="pc-cart-item__title" href="${escapeHtml(item.url)}">${escapeHtml(item.product_title || item.title)}</a>
+                    ${variant}
+                  </div>
+                  <span class="pc-cart-item__price">${money(item.final_line_price ?? item.line_price)}</span>
+                </div>
+                <div class="pc-cart-item__bottom">
+                  <div class="pc-qty" aria-label="Quantity for ${escapeHtml(item.product_title || item.title)}">
+                    <button type="button" aria-label="Decrease quantity" data-pc-qty-minus>−</button>
+                    <input type="number" min="0" value="${item.quantity}" aria-label="Quantity" data-pc-qty-input>
+                    <button type="button" aria-label="Increase quantity" data-pc-qty-plus>+</button>
+                  </div>
+                  <button class="pc-remove" type="button" data-pc-remove>Remove</button>
+                </div>
+              </div>
+            </article>`;
+        }).join('')}</div>`;
+
+        if (cartSubtotal) cartSubtotal.textContent = money(cart.total_price);
+        cartFooter.hidden = false;
+      };
+
+      const fetchCart = async () => {
+        const response = await fetch(`${root}cart.js`, { headers: { Accept: 'application/json' } });
+        if (!response.ok) throw new Error(`Cart request failed: ${response.status}`);
+        return response.json();
+      };
+
+      const loadCart = async () => {
+        if (!cartContent) return;
+        cartContent.innerHTML = '<div class="pc-cart-loading">Loading your cart…</div>';
+        try {
+          const cart = await fetchCart();
+          renderCart(cart);
+        } catch (_error) {
+          cartContent.innerHTML = `<div class="pc-cart-empty"><div class="pc-cart-empty__inner"><strong>We couldn’t refresh the cart.</strong><a href="${root}cart">Open full cart</a></div></div>`;
+          cartFooter.hidden = true;
+        }
+      };
+
+      const changeCartLine = async (line, quantity) => {
+        const response = await fetch(`${root}cart/change.js`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ line, quantity: Math.max(0, Number(quantity) || 0) })
+        });
+        if (!response.ok) throw new Error(`Cart update failed: ${response.status}`);
+        const cart = await response.json();
+        renderCart(cart);
+        document.dispatchEvent(new CustomEvent('pc:cart-updated', { detail: { cart } }));
+      };
+
+      header.querySelectorAll('[data-pc-cart-open]').forEach((trigger) => {
+        trigger.addEventListener('click', (event) => {
+          if (!cartDrawer) return;
+          event.preventDefault();
+          openDrawer(cartDrawer, trigger);
+          loadCart();
+        });
+      });
+
+      cartContent?.addEventListener('click', async (event) => {
+        const item = event.target.closest('[data-line]');
+        if (!item) return;
+        const line = Number(item.dataset.line);
+        const input = item.querySelector('[data-pc-qty-input]');
+        if (!input) return;
+
+        let quantity = Number(input.value) || 0;
+        if (event.target.closest('[data-pc-qty-minus]')) quantity -= 1;
+        else if (event.target.closest('[data-pc-qty-plus]')) quantity += 1;
+        else if (event.target.closest('[data-pc-remove]')) quantity = 0;
+        else return;
+
+        item.style.opacity = '.55';
+        item.style.pointerEvents = 'none';
+        try { await changeCartLine(line, quantity); }
+        catch (_error) { await loadCart(); }
+      });
+
+      cartContent?.addEventListener('change', async (event) => {
+        if (!event.target.matches('[data-pc-qty-input]')) return;
+        const item = event.target.closest('[data-line]');
+        if (!item) return;
+        item.style.opacity = '.55';
+        item.style.pointerEvents = 'none';
+        try { await changeCartLine(Number(item.dataset.line), event.target.value); }
+        catch (_error) { await loadCart(); }
+      });
+
+      document.addEventListener('submit', async (event) => {
+        const form = event.target.closest('.pc-js-quick-add');
+        if (!form) return;
+        event.preventDefault();
+
+        const submitButton = form.querySelector('[type="submit"]');
+        if (submitButton) {
+          submitButton.disabled = true;
+          submitButton.dataset.originalText = submitButton.textContent;
+          submitButton.textContent = 'Adding…';
+        }
+
+        try {
+          const response = await fetch(`${root}cart/add.js`, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { Accept: 'application/json' }
+          });
+          if (!response.ok) throw new Error(`Add to cart failed: ${response.status}`);
+          const cart = await fetchCart();
+          document.dispatchEvent(new CustomEvent('pc:cart-updated', { detail: { cart } }));
+          if (cartDrawer) {
+            openDrawer(cartDrawer, submitButton);
+            renderCart(cart);
+          }
+        } catch (_error) {
+          form.submit();
+          return;
+        } finally {
+          if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.textContent = submitButton.dataset.originalText || 'Add to cart';
+          }
+        }
+      });
+
+      document.addEventListener('pc:cart-updated', (event) => {
+        const cart = event.detail?.cart;
+        if (!cart || !cartCount) return;
+        cartCount.textContent = cart.item_count;
+        cartCount.classList.toggle('is-hidden', cart.item_count === 0);
+      });
+
+      document.addEventListener('click', (event) => {
+        if (!event.target.closest('[data-pc-menu-item]')) closeMegaMenus();
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape') return;
+        closeMegaMenus();
+        closeAllDrawers();
+      });
+    });
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Paws & Claws header",
+  "tag": "section",
+  "class": "pc-header-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_announcement",
+      "label": "Show announcement bar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "announcement_text",
+      "label": "Announcement text",
+      "default": "Free shipping on qualifying orders | Because every pet deserves something special"
+    },
+    {
+      "type": "url",
+      "id": "announcement_link",
+      "label": "Announcement link"
+    },
+    {
+      "type": "color",
+      "id": "announcement_background",
+      "label": "Announcement background",
+      "default": "#162238"
+    },
+    {
+      "type": "color",
+      "id": "announcement_text_color",
+      "label": "Announcement text",
+      "default": "#F7F3EA"
+    },
+    {
+      "type": "header",
+      "content": "Brand"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo width",
+      "min": 100,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "default": 190
+    },
+    {
+      "type": "color",
+      "id": "header_background",
+      "label": "Header background",
+      "default": "#F7F3EA"
+    },
+    {
+      "type": "color",
+      "id": "header_text",
+      "label": "Header text",
+      "default": "#162238"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent",
+      "default": "#7E9B81"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sticky",
+      "label": "Sticky header",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Main menu"
+    },
+    {
+      "type": "header",
+      "content": "Cart"
+    },
+    {
+      "type": "range",
+      "id": "free_shipping_threshold",
+      "label": "Free shipping goal",
+      "info": "Set to 0 to hide the progress bar. Amount is in your store currency.",
+      "min": 0,
+      "max": 300,
+      "step": 5,
+      "unit": "$",
+      "default": 75
+    }
+  ],
+  "blocks": [
+    {
+      "type": "mega_promo",
+      "name": "Mega menu promo",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "menu_label",
+          "label": "Parent menu title",
+          "info": "Must exactly match the top-level menu title, for example Dogs or Cats."
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Eyebrow",
+          "default": "Featured"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Pet parent favorites"
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "label": "Link label",
+          "default": "Shop now"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

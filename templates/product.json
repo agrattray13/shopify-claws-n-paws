@@ -1,0 +1,7 @@
+{
+  "sections": {
+    "main": { "type": "product", "settings": {} },
+    "recommendations": { "type": "pc-product-recommendations", "settings": {} }
+  },
+  "order": ["main", "recommendations"]
+}

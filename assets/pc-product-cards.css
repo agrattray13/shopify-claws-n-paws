@@ -1,0 +1,27 @@
+.pc-product-card { min-width: 0; overflow: hidden; border: 1px solid #ecebe6; border-radius: 20px; background: #fff; color: #162238; box-shadow: 0 12px 28px rgba(22,34,56,.05); }
+.pc-product-card__media { position: relative; aspect-ratio: 1/1.06; overflow: hidden; display: block; background: #f4f2ec; }
+.pc-product-card__media img,
+.pc-product-card__placeholder { width: 100%; height: 100%; display: block; object-fit: cover; transition: transform .35s ease; }
+.pc-product-card:hover .pc-product-card__media img { transform: scale(1.035); }
+.pc-product-card__badges { position: absolute; left: 12px; top: 12px; display: flex; flex-wrap: wrap; gap: 6px; }
+.pc-product-card__badge { padding: 6px 9px; border-radius: 999px; background: #162238; color: #fff; font-size: 8px; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+.pc-product-card__badge--sale { background: #d4a65a; color: #162238; }
+.pc-product-card__body { padding: 17px 16px 16px; }
+.pc-product-card__vendor { display: block; margin-bottom: 6px; color: #7e9b81; font-size: 8px; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+.pc-product-card__title { min-height: 35px; display: block; color: #162238; text-decoration: none; font-size: 13px; font-weight: 800; line-height: 1.35; }
+.pc-product-card__title:hover { color: #607b64; }
+.pc-product-card__price { min-height: 26px; margin-top: 9px; display: flex; align-items: center; gap: 8px; font-size: 12px; }
+.pc-product-card__price-current { font-weight: 850; }
+.pc-product-card__price s { color: #8a919b; font-size: 10px; }
+.pc-product-card__actions { margin-top: 13px; }
+.pc-product-card__form { margin: 0; }
+.pc-product-card__button { width: 100%; min-height: 42px; padding: 11px 14px; border: 1px solid #162238; border-radius: 999px; background: #162238; color: #fff !important; display: flex; align-items: center; justify-content: center; text-align: center; text-decoration: none; cursor: pointer; font-size: 9px; font-weight: 850; letter-spacing: .07em; text-transform: uppercase; transition: transform .18s ease, background .18s ease; }
+.pc-product-card__button:hover { background: #2a3c59; transform: translateY(-1px); }
+.pc-product-card__button:disabled { opacity: .65; cursor: wait; }
+.pc-product-card__button--muted { background: transparent; color: #162238 !important; }
+@media (max-width: 749px) {
+  .pc-product-card { border-radius: 16px; }
+  .pc-product-card__body { padding: 13px 12px 12px; }
+  .pc-product-card__title { font-size: 11px; }
+  .pc-product-card__button { min-height: 39px; font-size: 8px; }
+}

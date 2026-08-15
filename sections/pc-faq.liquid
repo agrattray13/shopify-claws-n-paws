@@ -1,0 +1,33 @@
+<section class="pc-faq">
+  <div class="pc-faq__head">
+    <p>{{ section.settings.eyebrow | escape }}</p>
+    <h1>{{ section.settings.heading | escape }}</h1>
+    <div class="rte">{{ section.settings.text }}</div>
+  </div>
+  <div class="pc-faq__list">
+    {% for block in section.blocks %}
+      <details {{ block.shopify_attributes }}>
+        <summary><span>{{ block.settings.question | escape }}</span><b>+</b></summary>
+        <div class="pc-faq__answer rte">{{ block.settings.answer }}</div>
+      </details>
+    {% endfor %}
+  </div>
+  <div class="pc-faq__cta">
+    <div><p>Still need help?</p><h2>Talk to a real person.</h2></div>
+    <a href="mailto:arthurscreatives@gmail.com">Email customer support →</a>
+  </div>
+</section>
+
+{% stylesheet %}
+.pc-faq{background:#f7f3ea;color:#162238;padding:90px max(32px,calc((100vw - 1300px)/2)) 110px}.pc-faq *{box-sizing:border-box}.pc-faq__head{text-align:center}.pc-faq__head>p{margin:0 0 12px;color:#7e9b81;font-size:10px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}.pc-faq__head h1{margin:0;font-size:clamp(58px,7vw,100px);line-height:.9;letter-spacing:-.065em}.pc-faq__head .rte{max-width:650px;margin:22px auto 0;color:#687481;line-height:1.7}.pc-faq__list{margin-top:60px;border-top:1px solid rgba(22,34,56,.13)}.pc-faq__list details{border-bottom:1px solid rgba(22,34,56,.13)}.pc-faq__list summary{min-height:82px;display:flex;justify-content:space-between;align-items:center;gap:24px;list-style:none;cursor:pointer;font-size:clamp(17px,2vw,22px);font-weight:800;letter-spacing:-.02em}.pc-faq__list summary::-webkit-details-marker{display:none}.pc-faq__list summary b{font-size:26px;font-weight:400;transition:transform .2s}.pc-faq__list details[open] summary b{transform:rotate(45deg)}.pc-faq__answer{max-width:920px;padding:0 0 30px;color:#64707d;line-height:1.8;font-size:14px}.pc-faq__cta{margin-top:70px;padding:42px;border-radius:28px;background:#162238;color:#fff;display:flex;justify-content:space-between;align-items:end;gap:32px}.pc-faq__cta p{margin:0 0 6px;color:#d4a65a;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.12em}.pc-faq__cta h2{margin:0;font-size:38px;letter-spacing:-.04em}.pc-faq__cta a{padding:13px 18px;border-radius:999px;background:#d4a65a;color:#162238;text-decoration:none;font-size:10px;font-weight:900;text-transform:uppercase}
+@media(max-width:700px){.pc-faq{padding:64px 20px 80px}.pc-faq__list{margin-top:42px}.pc-faq__list summary{min-height:72px}.pc-faq__cta{padding:30px 24px;flex-direction:column;align-items:flex-start}}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name":"P&C FAQ",
+  "settings":[{"type":"text","id":"eyebrow","label":"Eyebrow","default":"Answers for pet parents"},{"type":"text","id":"heading","label":"Heading","default":"Questions? Start Here."},{"type":"richtext","id":"text","label":"Intro","default":"<p>Quick answers to common shopping, shipping, sizing, and order questions.</p>"}],
+  "blocks":[{"type":"faq","name":"Question","settings":[{"type":"text","id":"question","label":"Question","default":"How long does shipping take?"},{"type":"richtext","id":"answer","label":"Answer","default":"<p>Shipping times vary by destination and product. Check the shipping details shown at checkout and our shipping policy for current information.</p>"}]}],
+  "presets":[{"name":"P&C FAQ","blocks":[{"type":"faq","settings":{"question":"How long does shipping take?","answer":"<p>Shipping times vary by destination and product. Check the shipping details shown at checkout and our shipping policy for current information.</p>"}},{"type":"faq","settings":{"question":"How can I track my order?","answer":"<p>When tracking is available, you’ll receive shipment information using the contact details provided with your order.</p>"}},{"type":"faq","settings":{"question":"Can I change or cancel an order?","answer":"<p>Contact us as quickly as possible. We’ll help when an order has not already entered fulfillment.</p>"}},{"type":"faq","settings":{"question":"What is your return policy?","answer":"<p>Return eligibility and timing are described in the store’s current refund policy. Please review that policy before starting a return.</p>"}},{"type":"faq","settings":{"question":"What if my item arrives damaged?","answer":"<p>Contact customer support with your order information and photos of the issue so we can review what happened.</p>"}},{"type":"faq","settings":{"question":"Do you sell products for both dogs and cats?","answer":"<p>Yes. Paws & Claws is designed around everyday favorites and essentials for both dogs and cats.</p>"}},{"type":"faq","settings":{"question":"How do I know which size to order?","answer":"<p>Use the size information shown on the product page when available and measure your pet before ordering wearable items.</p>"}},{"type":"faq","settings":{"question":"Do you offer discounts or promotions?","answer":"<p>Promotions may be offered from time to time. Join the Paws & Claws newsletter for store updates and special offers.</p>"}}]}]
+}
+{% endschema %}
