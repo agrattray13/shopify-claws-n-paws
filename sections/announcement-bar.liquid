@@ -1,18 +1,11 @@
-{% if settings.show_announcement %}
-  <div class="announcement-bar" role="banner" aria-label="Announcement">
-    <div class="container">
-      {%- if settings.announcement_link != blank -%}
-        <a href="{{ settings.announcement_link }}">{{ settings.announcement_text }}</a>
-      {%- else -%}
-        <span>{{ settings.announcement_text }}</span>
-      {%- endif -%}
-    </div>
-  </div>
-{% endif %}
-
+{%- if section.settings.message != blank -%}
+<div class="announcement" role="region" aria-label="Announcement">
+  {%- if section.settings.link != blank -%}<a href="{{ section.settings.link }}">{{ section.settings.message }}</a>{%- else -%}{{ section.settings.message }}{%- endif -%}
+</div>
+{%- endif -%}
 {% schema %}
-{
-  "name": "Announcement Bar",
-  "settings": []
-}
+{ "name": "Announcement bar", "settings": [
+  { "type": "text", "id": "message", "label": "Message", "default": "Free shipping on orders over $50" },
+  { "type": "url", "id": "link", "label": "Link" }
+] }
 {% endschema %}

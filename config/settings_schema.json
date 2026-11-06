@@ -1,114 +1,27 @@
 [
-  {
-    "name": "theme_info",
-    "theme_name": "Paws & Claws",
-    "theme_version": "1.0.0",
-    "theme_author": "Paws & Claws",
-    "theme_documentation_url": "https://pawsandclaws.com",
-    "theme_support_url": "https://pawsandclaws.com"
-  },
-  {
-    "name": "Colors",
-    "settings": [
-      {
-        "type": "color",
-        "id": "color_primary",
-        "label": "Primary color",
-        "default": "#162238"
-      },
-      {
-        "type": "color",
-        "id": "color_accent",
-        "label": "Accent color",
-        "default": "#D4A65A"
-      },
-      {
-        "type": "color",
-        "id": "color_background",
-        "label": "Background color",
-        "default": "#F7F3EA"
-      },
-      {
-        "type": "color",
-        "id": "color_secondary",
-        "label": "Secondary color",
-        "default": "#7E9B81"
-      },
-      {
-        "type": "color",
-        "id": "color_text",
-        "label": "Text color",
-        "default": "#252525"
-      }
-    ]
-  },
-  {
-    "name": "Typography",
-    "settings": [
-      {
-        "type": "font_picker",
-        "id": "font_heading",
-        "label": "Heading font",
-        "default": "playfair_display_n4"
-      },
-      {
-        "type": "font_picker",
-        "id": "font_body",
-        "label": "Body font",
-        "default": "lato_n4"
-      }
-    ]
-  },
-  {
-    "name": "Header",
-    "settings": [
-      {
-        "type": "image_picker",
-        "id": "logo",
-        "label": "Logo image"
-      },
-      {
-        "type": "range",
-        "id": "logo_max_width",
-        "min": 80,
-        "max": 300,
-        "step": 10,
-        "unit": "px",
-        "label": "Logo max width",
-        "default": 160
-      }
-    ]
-  },
-  {
-    "name": "Announcement Bar",
-    "settings": [
-      {
-        "type": "checkbox",
-        "id": "show_announcement",
-        "label": "Show announcement bar",
-        "default": true
-      },
-      {
-        "type": "text",
-        "id": "announcement_text",
-        "label": "Announcement text",
-        "default": "Free Shipping on Qualifying Orders | Because Every Pet Deserves Something Special"
-      },
-      {
-        "type": "url",
-        "id": "announcement_link",
-        "label": "Announcement link"
-      }
-    ]
-  },
-  {
-    "name": "Favicon",
-    "settings": [
-      {
-        "type": "image_picker",
-        "id": "favicon",
-        "label": "Favicon image"
-      }
-    ]
-  }
+  { "name": "theme_info", "theme_name": "Claws & Paws Premium", "theme_version": "1.0.0", "theme_author": "agrattray13", "theme_documentation_url": "https://github.com/agrattray13/shopify-claws-n-paws", "theme_support_url": "https://github.com/agrattray13/shopify-claws-n-paws/issues" },
+  { "name": "Colors", "settings": [
+    { "type": "color", "id": "color_cream", "label": "Cream background", "default": "#F5EFE4" },
+    { "type": "color", "id": "color_tan", "label": "Tan", "default": "#D8C3A5" },
+    { "type": "color", "id": "color_caramel", "label": "Caramel accent", "default": "#B08968" },
+    { "type": "color", "id": "color_brown", "label": "Rich brown (headings, footer)", "default": "#5C4033" },
+    { "type": "color", "id": "color_espresso", "label": "Espresso (body text)", "default": "#3B2A20" },
+    { "type": "color", "id": "color_green", "label": "Hunter green (buttons, links)", "default": "#355E3B" },
+    { "type": "color", "id": "color_green_hover", "label": "Hunter green hover", "default": "#2A4A2F" }
+  ]},
+  { "name": "Typography", "settings": [
+    { "type": "font_picker", "id": "heading_font", "label": "Heading font", "default": "playfair_display_n6" },
+    { "type": "font_picker", "id": "body_font", "label": "Body font", "default": "lato_n4" },
+    { "type": "range", "id": "page_width", "label": "Page width", "min": 1000, "max": 1600, "step": 50, "unit": "px", "default": 1300 }
+  ]},
+  { "name": "Product cards", "settings": [
+    { "type": "checkbox", "id": "card_float", "label": "Gentle idle float animation", "default": false },
+    { "type": "checkbox", "id": "show_rating", "label": "Show star rating", "default": true }
+  ]},
+  { "name": "Social media", "settings": [
+    { "type": "text", "id": "social_facebook", "label": "Facebook URL" },
+    { "type": "text", "id": "social_instagram", "label": "Instagram URL" },
+    { "type": "text", "id": "social_tiktok", "label": "TikTok URL" },
+    { "type": "text", "id": "social_youtube", "label": "YouTube URL" }
+  ]}
 ]
