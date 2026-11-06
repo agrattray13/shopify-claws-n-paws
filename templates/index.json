@@ -1,0 +1,97 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "eyebrow": "Welcome to Paws & Claws",
+        "heading": "Premium Pet Supplies for Every Tail Wag",
+        "subheading": "Discover curated, quality products for your dog or cat. Free shipping on qualifying orders.",
+        "cta_label": "Shop Now",
+        "cta_url": "/collections/all",
+        "secondary_label": "Learn More",
+        "secondary_url": "/pages/about"
+      }
+    },
+    "shop-by-pet": {
+      "type": "shop-by-pet",
+      "settings": {
+        "heading": "Shop by Pet"
+      }
+    },
+    "shop-by-category": {
+      "type": "shop-by-category",
+      "settings": {
+        "heading": "Shop by Category"
+      }
+    },
+    "featured-products": {
+      "type": "featured-products",
+      "settings": {
+        "heading": "Featured Products",
+        "products_to_show": 4,
+        "view_all_url": "/collections/all"
+      }
+    },
+    "new-arrivals": {
+      "type": "featured-products",
+      "settings": {
+        "heading": "New Arrivals",
+        "products_to_show": 4,
+        "view_all_url": "/collections/new-arrivals"
+      }
+    },
+    "best-sellers": {
+      "type": "featured-products",
+      "settings": {
+        "heading": "Best Sellers",
+        "products_to_show": 4,
+        "view_all_url": "/collections/best-sellers"
+      }
+    },
+    "why-pawsclaws": {
+      "type": "why-pawsclaws",
+      "blocks": {
+        "benefit-1": {
+          "type": "benefit",
+          "settings": { "icon": "🚀", "title": "Fast Shipping", "description": "Free on qualifying orders. Delivered with care." }
+        },
+        "benefit-2": {
+          "type": "benefit",
+          "settings": { "icon": "✅", "title": "Vet Approved", "description": "Products trusted and recommended by vets." }
+        },
+        "benefit-3": {
+          "type": "benefit",
+          "settings": { "icon": "💛", "title": "Pet-First Quality", "description": "Only safe, non-toxic, high-quality materials." }
+        },
+        "benefit-4": {
+          "type": "benefit",
+          "settings": { "icon": "🔄", "title": "Easy Returns", "description": "30-day hassle-free returns. No questions asked." }
+        }
+      },
+      "block_order": ["benefit-1", "benefit-2", "benefit-3", "benefit-4"],
+      "settings": {
+        "heading": "Why Paws & Claws?",
+        "subheading": "We make it easy to give your pets the best."
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "heading": "Join the Paws & Claws Family",
+        "subheading": "Get exclusive deals, new arrivals, and pet care tips delivered to your inbox.",
+        "button_label": "Subscribe",
+        "disclaimer": "No spam. Unsubscribe anytime."
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "shop-by-pet",
+    "shop-by-category",
+    "featured-products",
+    "new-arrivals",
+    "best-sellers",
+    "why-pawsclaws",
+    "newsletter"
+  ]
+}

@@ -1,0 +1,41 @@
+<section class="section-padding" aria-label="Shop by category">
+  <div class="container">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="section-title">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    <div class="product-grid" style="grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));">
+      {%- assign categories = 'Toys,Beds,Feeding,Grooming,Collars & Leashes,Travel,Clothing & Accessories,New Arrivals' | split: ',' -%}
+      {%- for cat in categories -%}
+        {%- assign cat_handle = cat | handle -%}
+        <a href="{{ routes.collections_url }}/{{ cat_handle }}" class="product-card" style="align-items:center; padding: 1.5rem 1rem; text-align:center;">
+          <div style="font-size:2.5rem; margin-bottom:0.5rem;">
+            {%- case cat_handle -%}
+              {%- when 'toys' -%}🎾
+              {%- when 'beds' -%}🛏️
+              {%- when 'feeding' -%}🍽️
+              {%- when 'grooming' -%}✂️
+              {%- when 'collars-leashes' -%}🦮
+              {%- when 'travel' -%}🧳
+              {%- when 'clothing-accessories' -%}👕
+              {%- when 'new-arrivals' -%}✨
+              {%- else -%}🐾
+            {%- endcase -%}
+          </div>
+          <p style="font-weight:700; font-size:0.9rem; color:var(--color-primary);">{{ cat }}</p>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Shop by Category",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Shop by Category" }
+  ],
+  "presets": [{ "name": "Shop by Category" }]
+}
+{% endschema %}

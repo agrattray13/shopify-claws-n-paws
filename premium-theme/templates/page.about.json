@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "banner": { "type": "page-banner", "settings": { "heading": "About Us" } },
+    "story": { "type": "image-with-text", "settings": { "heading": "Our story" } },
+    "values": { "type": "image-with-text", "settings": { "heading": "Our promise", "reverse": true, "background": "cream", "button_label": "" } },
+    "testimonials": { "type": "testimonials", "blocks": { "t1": { "type": "testimonial" }, "t2": { "type": "testimonial", "settings": { "quote": "Gorgeous quality.", "author": "James T." } } }, "block_order": ["t1", "t2"], "settings": {} }
+  },
+  "order": ["banner", "story", "values", "testimonials"]
+}

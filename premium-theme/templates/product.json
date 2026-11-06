@@ -1,0 +1,11 @@
+{
+  "sections": {
+    "main": { "type": "main-product", "blocks": {
+      "t1": { "type": "tab", "settings": { "title": "Ingredients / Materials", "content": "<p>Add ingredients or materials here.</p>" } },
+      "t2": { "type": "tab", "settings": { "title": "Shipping & Returns", "content": "<p>Free shipping over $50. Easy 30-day returns.</p>" } },
+      "t3": { "type": "tab", "settings": { "title": "Reviews", "content": "<p>Customer reviews appear here.</p>" } } },
+      "block_order": ["t1", "t2", "t3"], "settings": {} },
+    "recommendations": { "type": "product-recommendations", "settings": {} }
+  },
+  "order": ["main", "recommendations"]
+}

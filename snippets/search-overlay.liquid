@@ -1,0 +1,27 @@
+{%- comment -%}
+  Search overlay snippet — included from layout/theme.liquid
+{%- endcomment -%}
+
+<div class="search-overlay" id="search-overlay" role="dialog" aria-modal="true" aria-label="Search">
+  <div class="search-overlay__box">
+    <form class="search-overlay__form" action="{{ routes.search_url }}" method="get" role="search">
+      <input
+        class="search-overlay__input"
+        type="search"
+        name="q"
+        placeholder="Search products..."
+        aria-label="Search"
+        autocomplete="off">
+      <button type="submit" class="btn btn-primary" aria-label="Search">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
+        </svg>
+      </button>
+    </form>
+    <div style="margin-top: var(--spacing-sm); font-size: 0.85rem; color: var(--color-secondary);">
+      Press <kbd>Esc</kbd> or
+      <button type="button" class="search-overlay__close" style="background:none;border:none;text-decoration:underline;cursor:pointer;font-size:inherit;color:var(--color-secondary);">click here</button>
+      to close
+    </div>
+  </div>
+</div>

@@ -1,0 +1,36 @@
+<section class="section"><div class="page-width"><div class="contact-grid">
+  <div>
+    {%- form 'contact' -%}
+      {%- if form.posted_successfully? -%}<div class="notice" role="status">{{ 'contact.success' | t }}</div>{%- endif -%}
+      {%- if form.errors -%}<div class="error" role="alert">{{ form.errors | default_errors }}</div>{%- endif -%}
+      {%- unless form.posted_successfully? -%}
+        <div class="field"><label for="CF-name">{{ 'contact.name' | t }}</label><input id="CF-name" name="contact[name]" autocomplete="name" required value="{{ form.name }}"></div>
+        <div class="field"><label for="CF-email">{{ 'contact.email' | t }}</label><input id="CF-email" type="email" name="contact[email]" autocomplete="email" required value="{{ form.email }}"></div>
+        <div class="field"><label for="CF-phone">{{ 'contact.phone' | t }}</label><input id="CF-phone" type="tel" name="contact[phone]" autocomplete="tel" value="{{ form.phone }}"></div>
+        <div class="field"><label for="CF-body">{{ 'contact.message' | t }}</label><textarea id="CF-body" name="contact[body]" rows="6" required>{{ form.body }}</textarea></div>
+        <button type="submit" class="btn">{{ 'contact.send' | t }}</button>
+      {%- endunless -%}
+    {%- endform -%}
+  </div>
+  <div>
+    <h2>{{ section.settings.info_heading }}</h2>
+    <ul class="info-list">
+      {%- if section.settings.email != blank -%}<li>{% render 'icon', name: 'mail' %}<a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a></li>{%- endif -%}
+      {%- if section.settings.phone != blank -%}<li>{% render 'icon', name: 'phone' %}<a href="tel:{{ section.settings.phone | remove: ' ' }}">{{ section.settings.phone }}</a></li>{%- endif -%}
+      {%- if section.settings.hours != blank -%}<li>{% render 'icon', name: 'clock' %}<span>{{ section.settings.hours | newline_to_br }}</span></li>{%- endif -%}
+      {%- if section.settings.address != blank -%}<li>{% render 'icon', name: 'pin' %}<span>{{ section.settings.address | newline_to_br }}</span></li>{%- endif -%}
+    </ul>
+  </div>
+</div></div></section>
+{% schema %}
+{ "name": "Contact form",
+  "settings": [
+    { "type": "text", "id": "info_heading", "label": "Info heading", "default": "Visit or call us" },
+    { "type": "text", "id": "email", "label": "Email" },
+    { "type": "text", "id": "phone", "label": "Phone" },
+    { "type": "textarea", "id": "hours", "label": "Hours", "default": "Mon–Fri: 9am–6pm\nSat: 10am–4pm" },
+    { "type": "textarea", "id": "address", "label": "Address" }
+  ],
+  "presets": [ { "name": "Contact form" } ]
+}
+{% endschema %}

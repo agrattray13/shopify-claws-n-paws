@@ -1,0 +1,31 @@
+<div style="max-width: 480px; margin: 0 auto;">
+  <h1 style="text-align:center; margin-bottom: var(--spacing-md);">Sign In</h1>
+
+  {% form 'customer_login' %}
+    {%- if form.errors -%}
+      <div style="background:#fee2e2; color:#b91c1c; padding:1rem 1.25rem; border-radius:var(--radius-sm); margin-bottom:1.25rem;">
+        {{ form.errors | default_errors }}
+      </div>
+    {%- endif -%}
+
+    <div class="form-group">
+      <label for="CustomerEmail">Email</label>
+      <input class="form-control" type="email" id="CustomerEmail" name="customer[email]" autocomplete="email" required>
+    </div>
+
+    <div class="form-group">
+      <label for="CustomerPassword">Password</label>
+      <input class="form-control" type="password" id="CustomerPassword" name="customer[password]" autocomplete="current-password" required>
+    </div>
+
+    <div style="display:flex; justify-content:flex-end; margin-bottom:1.25rem;">
+      <a href="{{ routes.root_url }}account/login#recover" style="font-size:0.875rem; color:var(--color-accent);">Forgot password?</a>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-full btn-lg">Sign In</button>
+  {% endform %}
+
+  <p style="text-align:center; margin-top:1.5rem; font-size:0.9rem;">
+    Don't have an account? <a href="{{ routes.account_register_url }}" style="color:var(--color-accent); font-weight:600;">Create one</a>
+  </p>
+</div>

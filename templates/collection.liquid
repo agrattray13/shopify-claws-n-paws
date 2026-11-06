@@ -1,0 +1,140 @@
+<!-- Collection Header -->
+<div class="page-hero" style="padding: var(--spacing-md) var(--spacing-sm);">
+  <div class="container">
+    <h1>{{ collection.title }}</h1>
+    {%- if collection.description != blank -%}
+      <p>{{ collection.description }}</p>
+    {%- endif -%}
+  </div>
+</div>
+
+<div class="container section-padding" style="padding-top: var(--spacing-sm);">
+
+  <!-- Toolbar -->
+  <div class="collection-toolbar">
+    <div style="display:flex; align-items:center; gap:0.75rem;">
+      <button class="mobile-filters-toggle" type="button" aria-label="Open filters">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"/>
+        </svg>
+        Filters
+      </button>
+      <span class="collection-toolbar__count">
+        {%- paginate collection.products by 24 -%}
+          {{ collection.all_products_count }} products
+        {%- endpaginate -%}
+      </span>
+    </div>
+
+    <div class="collection-toolbar__sort">
+      <select id="sort-by" name="sort_by" aria-label="Sort by" onchange="window.location.href=window.location.pathname+'?sort_by='+this.value">
+        {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+        <option value="manual"{% if sort_by == 'manual' %} selected{% endif %}>Featured</option>
+        <option value="best-selling"{% if sort_by == 'best-selling' %} selected{% endif %}>Best Selling</option>
+        <option value="title-ascending"{% if sort_by == 'title-ascending' %} selected{% endif %}>A–Z</option>
+        <option value="title-descending"{% if sort_by == 'title-descending' %} selected{% endif %}>Z–A</option>
+        <option value="price-ascending"{% if sort_by == 'price-ascending' %} selected{% endif %}>Price: Low–High</option>
+        <option value="price-descending"{% if sort_by == 'price-descending' %} selected{% endif %}>Price: High–Low</option>
+        <option value="created-descending"{% if sort_by == 'created-descending' %} selected{% endif %}>Newest</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="collection-layout">
+    <!-- Desktop Sidebar Filters -->
+    <aside class="collection-filters" aria-label="Filters">
+      <div class="collection-filters__sticky">
+
+        <div class="filter-group">
+          <p class="filter-group__title">Availability</p>
+          <label class="filter-option">
+            <input type="checkbox" onchange="location.href=this.checked ? '{{ collection.url }}/available' : '{{ collection.url }}'"> In Stock
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" onchange="location.href=this.checked ? '{{ collection.url }}/sale' : '{{ collection.url }}'"> On Sale
+          </label>
+        </div>
+
+        <div class="filter-group">
+          <p class="filter-group__title">Price</p>
+          <label class="filter-option">
+            <input type="radio" name="price-filter"> Under $25
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="price-filter"> $25 – $50
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="price-filter"> $50 – $100
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="price-filter"> Over $100
+          </label>
+        </div>
+
+        {%- if collection.all_tags.size > 0 -%}
+          <div class="filter-group">
+            <p class="filter-group__title">Tags</p>
+            {%- for tag in collection.all_tags -%}
+              <label class="filter-option">
+                <input type="checkbox" {% if current_tags contains tag %}checked{% endif %}>
+                <a href="{{ collection.url }}/{{ tag | handle }}">{{ tag }}</a>
+              </label>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
+      </div>
+    </aside>
+
+    <!-- Product grid -->
+    <div class="collection-main">
+      {%- paginate collection.products by 24 -%}
+        {%- if collection.products.size > 0 -%}
+          <div class="product-grid">
+            {%- for product in collection.products -%}
+              {%- render 'product-card', product: product -%}
+            {%- endfor -%}
+          </div>
+          {%- render 'pagination', paginate: paginate -%}
+        {%- else -%}
+          <div style="text-align:center; padding: var(--spacing-lg); opacity:0.6;">
+            <p style="font-size:3rem;">🐾</p>
+            <p>No products found in this collection.</p>
+          </div>
+        {%- endif -%}
+      {%- endpaginate -%}
+    </div>
+
+  </div>
+</div>
+
+<!-- Mobile Filters Drawer -->
+<div class="mobile-filters" role="dialog" aria-modal="true" aria-label="Filters">
+  <div class="mobile-filters__overlay"></div>
+  <div class="mobile-filters__drawer">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem;">
+      <h3 style="font-size:1.1rem;">Filters</h3>
+      <button class="mobile-filters__close" type="button" aria-label="Close filters">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="22" height="22" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="filter-group">
+      <p class="filter-group__title">Availability</p>
+      <label class="filter-option"><input type="checkbox"> In Stock</label>
+      <label class="filter-option"><input type="checkbox"> On Sale</label>
+    </div>
+
+    <div class="filter-group">
+      <p class="filter-group__title">Price</p>
+      <label class="filter-option"><input type="radio" name="price-filter-mobile"> Under $25</label>
+      <label class="filter-option"><input type="radio" name="price-filter-mobile"> $25 – $50</label>
+      <label class="filter-option"><input type="radio" name="price-filter-mobile"> $50 – $100</label>
+      <label class="filter-option"><input type="radio" name="price-filter-mobile"> Over $100</label>
+    </div>
+
+    <button class="btn btn-primary btn-full mt-2 mobile-filters__close" type="button">Apply Filters</button>
+  </div>
+</div>

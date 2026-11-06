@@ -1,0 +1,7 @@
+<article class="section"><div class="page-width" style="max-width:800px">
+  <h1>{{ article.title }}</h1>
+  <p>{{ article.published_at | time_tag: format: 'date' }}{% if article.author %} &middot; {{ article.author }}{% endif %}</p>
+  {%- if article.image -%}<div class="article-img">{{ article.image | image_url: width: 1400 | image_tag: loading: 'eager', alt: article.image.alt | default: article.title }}</div>{%- endif -%}
+  <div class="rte">{{ article.content }}</div>
+</div></article>
+{% schema %}{ "name": "Article" }{% endschema %}

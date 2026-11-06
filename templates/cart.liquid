@@ -1,0 +1,86 @@
+<div class="page-hero">
+  <div class="container">
+    <h1>Your Cart</h1>
+  </div>
+</div>
+
+<div class="container page-content">
+  {%- if cart.item_count > 0 -%}
+    {% form 'cart', cart %}
+      <div style="display:grid; grid-template-columns: 1fr; gap: var(--spacing-md);">
+        <div>
+          <!-- Cart items -->
+          {%- for item in cart.items -%}
+            <div class="cart-item" style="grid-template-columns: 100px 1fr auto; padding: 1.25rem 0;">
+              <div class="cart-item__image" style="width:100px; height:100px;">
+                {%- if item.image -%}
+                  <a href="{{ item.url }}">
+                    <img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.image.alt | default: item.title | escape }}" width="100" height="100" loading="lazy">
+                  </a>
+                {%- endif -%}
+              </div>
+
+              <div>
+                <p class="cart-item__title"><a href="{{ item.url }}">{{ item.product.title }}</a></p>
+                {%- unless item.variant.title == 'Default Title' -%}
+                  <p class="cart-item__variant">{{ item.variant.title }}</p>
+                {%- endunless -%}
+
+                <div class="cart-item__qty" style="margin-top:0.75rem;">
+                  <div class="quantity-wrap">
+                    <button class="quantity-btn" type="button" data-action="decrement" aria-label="Decrease quantity">&minus;</button>
+                    <input class="quantity-input" type="number" name="updates[]" value="{{ item.quantity }}" min="1" aria-label="Quantity for {{ item.title | escape }}">
+                    <button class="quantity-btn" type="button" data-action="increment" aria-label="Increase quantity">+</button>
+                  </div>
+                </div>
+
+                <a href="/cart/change?id={{ item.key }}&quantity=0" class="cart-item__remove">Remove</a>
+              </div>
+
+              <div class="cart-item__price" style="text-align:right;">
+                {%- if item.line_price < item.original_line_price -%}
+                  <span style="color:var(--color-accent); font-weight:700;">{{ item.line_price | money }}</span>
+                  <span style="text-decoration:line-through; color:#999; font-size:0.875rem; display:block;">{{ item.original_line_price | money }}</span>
+                {%- else -%}
+                  {{ item.line_price | money }}
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endfor -%}
+
+          <div style="padding-top: 1rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+            <button type="submit" name="update" class="btn btn-outline btn-sm">Update Cart</button>
+            <a href="{{ routes.collections_url }}/all" class="btn btn-outline btn-sm">Continue Shopping</a>
+          </div>
+        </div>
+
+        <!-- Order summary -->
+        <div style="background:var(--color-white); border-radius:var(--radius-md); padding: var(--spacing-md); box-shadow: var(--shadow-sm); align-self:start;">
+          <h2 style="font-size:1.25rem; margin-bottom:1rem;">Order Summary</h2>
+
+          <div style="display:flex; justify-content:space-between; margin-bottom:0.75rem; font-size:0.95rem;">
+            <span>Subtotal ({{ cart.item_count }} items)</span>
+            <span>{{ cart.total_price | money }}</span>
+          </div>
+
+          <div style="border-top:1px solid var(--color-border); padding-top:0.75rem; margin-bottom:1rem;">
+            <div style="display:flex; justify-content:space-between; font-weight:700; font-size:1.1rem;">
+              <span>Total</span>
+              <span>{{ cart.total_price | money }}</span>
+            </div>
+            <p style="font-size:0.8rem; color:#888; margin-top:0.3rem;">Taxes and shipping calculated at checkout</p>
+          </div>
+
+          <a href="/checkout" class="btn btn-primary btn-full btn-lg">Checkout</a>
+        </div>
+      </div>
+    {% endform %}
+  {%- else -%}
+    <div style="text-align:center; padding: var(--spacing-xl) 0;">
+      <div style="font-size:5rem; margin-bottom:1rem;">🛒</div>
+      <h2>Your cart is empty</h2>
+      <p style="opacity:0.7; margin: 0.75rem 0 var(--spacing-md);">Looks like you haven't added anything yet.</p>
+      <a href="{{ routes.collections_url }}/all" class="btn btn-primary btn-lg">Start Shopping</a>
+    </div>
+  {%- endif -%}
+</div>

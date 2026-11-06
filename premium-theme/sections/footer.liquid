@@ -1,0 +1,42 @@
+<footer class="site-footer">
+  <div class="page-width">
+    <div class="footer__grid">
+      <div>
+        <h3>{{ section.settings.about_title }}</h3>
+        <div class="rte">{{ section.settings.about_text }}</div>
+        <div class="social" style="margin-top:1rem">
+          {%- for s in 'facebook,instagram,tiktok,youtube' | split: ',' -%}
+            {%- assign key = 'social_' | append: s -%}
+            {%- if settings[key] != blank -%}<a href="{{ settings[key] }}" rel="noopener" target="_blank">{{ s | capitalize }}</a>{%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+      {%- for block in section.blocks -%}
+        <div {{ block.shopify_attributes }}>
+          <h3>{{ block.settings.title }}</h3>
+          <ul>{%- for link in linklists[block.settings.menu].links -%}<li><a href="{{ link.url }}">{{ link.title }}</a></li>{%- endfor -%}</ul>
+        </div>
+      {%- endfor -%}
+    </div>
+    <div class="footer__bottom">
+      <span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}</span>
+      <ul class="payment">
+        {%- for type in shop.enabled_payment_types -%}<li>{{ type | payment_type_svg_tag: class: 'icon-payment' }}</li>{%- endfor -%}
+      </ul>
+    </div>
+  </div>
+</footer>
+{% schema %}
+{ "name": "Footer",
+  "settings": [
+    { "type": "text", "id": "about_title", "label": "About heading", "default": "Claws & Paws" },
+    { "type": "richtext", "id": "about_text", "label": "About text", "default": "<p>Premium, thoughtfully chosen supplies for the pets you love.</p>" }
+  ],
+  "blocks": [ { "type": "menu", "name": "Menu", "settings": [
+    { "type": "text", "id": "title", "label": "Heading", "default": "Shop" },
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "footer" }
+  ] } ],
+  "max_blocks": 4,
+  "default": { "blocks": [ { "type": "menu" }, { "type": "menu", "settings": { "title": "Help" } } ] }
+}
+{% endschema %}

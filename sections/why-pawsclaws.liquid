@@ -1,0 +1,55 @@
+<section class="section-padding" style="background-color: var(--color-white);" aria-label="Why Paws & Claws">
+  <div class="container">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="section-title">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    {%- if section.settings.subheading != blank -%}
+      <p class="text-center" style="max-width:560px; margin: -1rem auto var(--spacing-md); opacity:0.75;">{{ section.settings.subheading }}</p>
+    {%- endif -%}
+
+    <div class="why-grid">
+      {%- for block in section.blocks -%}
+        <div class="why-card" {{ block.shopify_attributes }}>
+          {%- if block.settings.icon != blank -%}
+            <div class="why-card__icon">{{ block.settings.icon }}</div>
+          {%- endif -%}
+          <p class="why-card__title">{{ block.settings.title }}</p>
+          <p class="why-card__desc">{{ block.settings.description }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Why Paws & Claws",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Why Paws & Claws?" },
+    { "type": "text", "id": "subheading", "label": "Subheading", "default": "We make it easy to give your pets the best." }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Benefit",
+      "settings": [
+        { "type": "text", "id": "icon", "label": "Emoji icon", "default": "🚀" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Fast Shipping" },
+        { "type": "text", "id": "description", "label": "Description", "default": "Free on qualifying orders. Fast and reliable." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Why Paws & Claws",
+      "blocks": [
+        { "type": "benefit", "settings": { "icon": "🚀", "title": "Fast Shipping", "description": "Free on qualifying orders. Delivered with care." } },
+        { "type": "benefit", "settings": { "icon": "✅", "title": "Vet Approved", "description": "Products trusted and recommended by vets." } },
+        { "type": "benefit", "settings": { "icon": "💛", "title": "Pet-First Quality", "description": "Only safe, non-toxic, high-quality materials." } },
+        { "type": "benefit", "settings": { "icon": "🔄", "title": "Easy Returns", "description": "30-day hassle-free returns. No questions asked." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

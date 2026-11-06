@@ -1,0 +1,24 @@
+<section class="section"><div class="page-width"><div class="benefits">
+  {%- for block in section.blocks -%}
+    <div class="benefit reveal" style="--delay: {{ forloop.index0 | times: 0.1 }}s" {{ block.shopify_attributes }}>
+      {% render 'icon', name: block.settings.icon %}
+      <h3>{{ block.settings.title }}</h3><p>{{ block.settings.text }}</p>
+    </div>
+  {%- endfor -%}
+</div></div></section>
+{% schema %}
+{ "name": "Benefits row",
+  "blocks": [ { "type": "benefit", "name": "Benefit", "settings": [
+    { "type": "select", "id": "icon", "label": "Icon", "default": "truck", "options": [
+      { "value": "truck", "label": "Truck" }, { "value": "shield", "label": "Shield" }, { "value": "heart", "label": "Heart" }, { "value": "return", "label": "Return" }, { "value": "paw", "label": "Paw" }, { "value": "lock", "label": "Lock" } ] },
+    { "type": "text", "id": "title", "label": "Title", "default": "Free Shipping" },
+    { "type": "text", "id": "text", "label": "Text", "default": "On orders over $50" }
+  ] } ],
+  "max_blocks": 4,
+  "presets": [ { "name": "Benefits row", "blocks": [
+    { "type": "benefit" },
+    { "type": "benefit", "settings": { "icon": "shield", "title": "Quality Guaranteed", "text": "Built to last" } },
+    { "type": "benefit", "settings": { "icon": "heart", "title": "Vet Approved", "text": "Safe for your pet" } },
+    { "type": "benefit", "settings": { "icon": "return", "title": "Easy Returns", "text": "30-day returns" } } ] } ]
+}
+{% endschema %}

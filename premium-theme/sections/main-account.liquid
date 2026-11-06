@@ -1,0 +1,15 @@
+<section class="section"><div class="page-width" style="max-width:900px">
+  <h1>{{ customer.first_name | default: customer.email }}</h1>
+  <p><a href="{{ routes.account_logout_url }}">{{ 'customer.logout' | t }}</a></p>
+  <h2>{{ 'customer.orders' | t }}</h2>
+  {%- paginate customer.orders by 20 -%}
+    {%- if customer.orders.size > 0 -%}
+      <table style="width:100%;text-align:left;border-collapse:collapse">
+        <thead><tr><th>Order</th><th>Date</th><th>Total</th></tr></thead>
+        <tbody>{%- for order in customer.orders -%}<tr><td><a href="{{ order.customer_url }}">{{ order.name }}</a></td><td>{{ order.created_at | date: '%b %d, %Y' }}</td><td>{{ order.total_price | money }}</td></tr>{%- endfor -%}</tbody>
+      </table>
+    {%- else -%}<p>{{ 'customer.no_orders' | t }}</p>{%- endif -%}
+    {%- render 'pagination', paginate: paginate -%}
+  {%- endpaginate -%}
+</div></section>
+{% schema %}{ "name": "Account" }{% endschema %}

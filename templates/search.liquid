@@ -1,0 +1,54 @@
+<!-- Search Results Page -->
+<div class="page-hero">
+  <div class="container">
+    <h1>Search Results</h1>
+    {%- if search.performed -%}
+      <p>
+        {%- if search.results_count == 0 -%}
+          No results found for &ldquo;{{ search.terms | escape }}&rdquo;
+        {%- else -%}
+          {{ search.results_count }} result{% if search.results_count != 1 %}s{% endif %} for &ldquo;{{ search.terms | escape }}&rdquo;
+        {%- endif -%}
+      </p>
+    {%- endif -%}
+  </div>
+</div>
+
+<div class="container section-padding">
+  <!-- Search form -->
+  <form action="{{ routes.search_url }}" method="get" class="contact-form" style="margin-bottom: var(--spacing-md);">
+    <div style="display:flex; gap:0.75rem;">
+      <input
+        class="form-control"
+        type="search"
+        name="q"
+        value="{{ search.terms | escape }}"
+        placeholder="Search products..."
+        aria-label="Search">
+      <input type="hidden" name="type" value="product">
+      <button type="submit" class="btn btn-primary" aria-label="Search">Search</button>
+    </div>
+  </form>
+
+  {%- if search.performed -%}
+    {%- if search.results_count > 0 -%}
+      {%- paginate search.results by 24 -%}
+        <div class="product-grid">
+          {%- for result in search.results -%}
+            {%- if result.object_type == 'product' -%}
+              {%- render 'product-card', product: result -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        {%- render 'pagination', paginate: paginate -%}
+      {%- endpaginate -%}
+    {%- else -%}
+      <div style="text-align:center; padding: var(--spacing-xl) 0;">
+        <div style="font-size:4rem; margin-bottom:1rem;">🔍</div>
+        <h2>No results found</h2>
+        <p style="opacity:0.7; margin: 0.75rem 0 var(--spacing-md);">Try a different search term or browse our collections.</p>
+        <a href="{{ routes.collections_url }}/all" class="btn btn-primary">Browse All Products</a>
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+</div>

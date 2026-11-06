@@ -1,0 +1,122 @@
+<div class="page-hero">
+  <div class="container">
+    <h1>Contact Us</h1>
+    <p>We'd love to hear from you. Get in touch and we'll respond as soon as possible.</p>
+  </div>
+</div>
+
+<div class="container page-content">
+  <div style="display:grid; grid-template-columns:1fr; gap: var(--spacing-lg);">
+
+    <!-- Contact form -->
+    <div class="contact-form">
+      <h2 style="margin-bottom: var(--spacing-md);">Send Us a Message</h2>
+
+      {% form 'contact' %}
+        {%- if form.posted_successfully? -%}
+          <div style="background:var(--color-secondary); color:var(--color-white); padding: 1rem 1.25rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem;">
+            ✓ Thank you for your message! We'll get back to you within 1–2 business days.
+          </div>
+        {%- endif -%}
+
+        {%- if form.errors -%}
+          <div style="background:#fee2e2; color:#b91c1c; padding: 1rem 1.25rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem;">
+            {{ form.errors | default_errors }}
+          </div>
+        {%- endif -%}
+
+        <div class="form-group">
+          <label for="ContactFormName">Your Name <span aria-hidden="true">*</span></label>
+          <input
+            class="form-control"
+            type="text"
+            id="ContactFormName"
+            name="contact[name]"
+            value="{{ form.name }}"
+            required
+            autocomplete="name">
+        </div>
+
+        <div class="form-group">
+          <label for="ContactFormEmail">Email Address <span aria-hidden="true">*</span></label>
+          <input
+            class="form-control"
+            type="email"
+            id="ContactFormEmail"
+            name="contact[email]"
+            value="{{ form.email }}"
+            required
+            autocomplete="email"
+            aria-required="true">
+        </div>
+
+        <div class="form-group">
+          <label for="ContactFormPhone">Phone Number</label>
+          <input
+            class="form-control"
+            type="tel"
+            id="ContactFormPhone"
+            name="contact[phone]"
+            value="{{ form.phone }}"
+            autocomplete="tel">
+        </div>
+
+        <div class="form-group">
+          <label for="ContactFormSubject">Subject</label>
+          <select class="form-control" id="ContactFormSubject" name="contact[subject]">
+            <option value="">Select a topic</option>
+            <option value="order">Order Inquiry</option>
+            <option value="return">Return / Exchange</option>
+            <option value="product">Product Question</option>
+            <option value="shipping">Shipping</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="ContactFormMessage">Message <span aria-hidden="true">*</span></label>
+          <textarea
+            class="form-control"
+            id="ContactFormMessage"
+            name="contact[body]"
+            required
+            aria-required="true">{{ form.body }}</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg">Send Message</button>
+      {% endform %}
+    </div>
+
+    <!-- Contact info -->
+    <div style="background: var(--color-white); border-radius: var(--radius-md); padding: var(--spacing-md); box-shadow: var(--shadow-sm); align-self: start;">
+      <h3 style="margin-bottom: 1.25rem;">Get in Touch</h3>
+
+      <div style="display:flex; flex-direction:column; gap:1rem;">
+        <div style="display:flex; align-items:flex-start; gap:0.75rem;">
+          <span style="font-size:1.4rem; flex-shrink:0;">📧</span>
+          <div>
+            <p style="font-weight:700; font-size:0.9rem;">Email</p>
+            <a href="mailto:{{ shop.email }}" style="color: var(--color-accent);">{{ shop.email }}</a>
+          </div>
+        </div>
+        {%- if shop.phone -%}
+          <div style="display:flex; align-items:flex-start; gap:0.75rem;">
+            <span style="font-size:1.4rem; flex-shrink:0;">📞</span>
+            <div>
+              <p style="font-weight:700; font-size:0.9rem;">Phone</p>
+              <a href="tel:{{ shop.phone }}">{{ shop.phone }}</a>
+            </div>
+          </div>
+        {%- endif -%}
+        <div style="display:flex; align-items:flex-start; gap:0.75rem;">
+          <span style="font-size:1.4rem; flex-shrink:0;">🕐</span>
+          <div>
+            <p style="font-weight:700; font-size:0.9rem;">Response Time</p>
+            <p style="font-size:0.9rem; opacity:0.8;">We typically respond within 1–2 business days.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

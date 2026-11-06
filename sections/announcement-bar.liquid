@@ -1,0 +1,18 @@
+{% if settings.show_announcement %}
+  <div class="announcement-bar" role="banner" aria-label="Announcement">
+    <div class="container">
+      {%- if settings.announcement_link != blank -%}
+        <a href="{{ settings.announcement_link }}">{{ settings.announcement_text }}</a>
+      {%- else -%}
+        <span>{{ settings.announcement_text }}</span>
+      {%- endif -%}
+    </div>
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Announcement Bar",
+  "settings": []
+}
+{% endschema %}
