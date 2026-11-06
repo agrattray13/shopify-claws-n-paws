@@ -1,0 +1,83 @@
+{%- assign current = product.selected_or_first_available_variant -%}
+<section class="section"><div class="page-width">
+  <div class="product">
+    <div data-gallery>
+      <div class="gallery__main" data-gallery-main>
+        {%- for media in product.media -%}{%- if media.media_type == 'image' -%}
+          {{ media.preview_image | image_url: width: 1400 | image_tag: widths: '600, 900, 1200, 1400', sizes: '(min-width: 850px) 50vw, 100vw', loading: forloop.first | ternary: 'eager', 'lazy', alt: media.alt | default: product.title }}
+        {%- endif -%}{%- else -%}{{ 'product-1' | placeholder_svg_tag }}{%- endfor -%}
+      </div>
+      {%- if product.media.size > 1 -%}
+        <div class="gallery__thumbs">
+          {%- for media in product.media -%}{%- if media.media_type == 'image' -%}
+            <button type="button" class="gallery__thumb" aria-label="{{ product.title | escape }} {{ forloop.index }}" aria-current="false">{{ media.preview_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: '' }}</button>
+          {%- endif -%}{%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+    <div>
+      <h1>{{ product.title }}</h1>
+      {%- if product.metafields.reviews.rating.value -%}<div class="rating" role="img" aria-label="{{ product.metafields.reviews.rating.value }} / 5">{% assign r = product.metafields.reviews.rating.value.rating | round %}{% for i in (1..5) %}{% if i <= r %}★{% else %}☆{% endif %}{% endfor %}</div>{%- endif -%}
+      <p class="product__price" data-price>{{ current.price | money }}</p>
+      {%- if section.settings.short_description -%}<div class="rte">{{ product.description | strip_html | truncatewords: 40 }}</div>{%- endif -%}
+
+      {%- form 'product', product, data-ajax-cart: '', data-product-form: '' -%}
+        <script type="application/json" data-variants>[{% for v in product.variants %}{"id":{{ v.id }},"options":{{ v.options | json }},"available":{{ v.available | json }},"price_formatted":{{ v.price | money | json }}}{% unless forloop.last %},{% endunless %}{% endfor %}]</script>
+        <input type="hidden" name="id" value="{{ current.id }}">
+        {%- unless product.has_only_default_variant -%}
+          {%- for option in product.options_with_values -%}
+            {%- assign oi = forloop.index0 -%}
+            <fieldset class="pills"><legend>{{ option.name }}</legend>
+              {%- for value in option.values -%}
+                <label class="pill"><input type="radio" data-option name="options[{{ option.name | escape }}]" value="{{ value | escape }}" {% if option.selected_value == value %}checked{% endif %}><span>{{ value }}</span></label>
+              {%- endfor -%}
+            </fieldset>
+          {%- endfor -%}
+        {%- endunless -%}
+        <div class="buy-row">
+          <div class="qty">
+            <button type="button" data-qty-step="-1" aria-label="-">&minus;</button>
+            <input type="number" name="quantity" value="1" min="1" aria-label="{{ 'products.quantity' | t }}">
+            <button type="button" data-qty-step="1" aria-label="+">+</button>
+          </div>
+        </div>
+        <button type="submit" class="btn btn--block" data-atc data-add="{{ 'products.add_to_cart' | t }}" data-soldout="{{ 'general.sold_out' | t }}" {% unless current.available %}disabled{% endunless %}>{% if current.available %}{{ 'products.add_to_cart' | t }}{% else %}{{ 'general.sold_out' | t }}{% endif %}</button>
+        {{ form | payment_button }}
+      {%- endform -%}
+
+      <div class="trust">
+        <span>{% render 'icon', name: 'truck' %}{{ section.settings.trust_1 }}</span>
+        <span>{% render 'icon', name: 'lock' %}{{ section.settings.trust_2 }}</span>
+        <span>{% render 'icon', name: 'return' %}{{ section.settings.trust_3 }}</span>
+      </div>
+
+      <div class="accordion">
+        {%- if product.description != blank -%}<details open><summary>Description</summary><div class="acc-body"><div class="rte">{{ product.description }}</div></div></details>{%- endif -%}
+        {%- for block in section.blocks -%}
+          {%- if block.settings.content != blank -%}<details {{ block.shopify_attributes }}><summary>{{ block.settings.title }}</summary><div class="acc-body"><div class="rte">{{ block.settings.content }}</div></div></details>{%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<div class="sticky-atc" data-sticky-atc>
+  <div><strong>{{ product.title }}</strong><br><span class="card__price" data-sticky-price>{{ current.price | money }}</span></div>
+  <button type="button" class="btn" data-sticky-btn>{{ 'products.add_to_cart' | t }}</button>
+</div>
+
+{% schema %}
+{ "name": "Product",
+  "settings": [
+    { "type": "checkbox", "id": "short_description", "label": "Show short description", "default": true },
+    { "type": "text", "id": "trust_1", "label": "Trust badge 1", "default": "Free shipping" },
+    { "type": "text", "id": "trust_2", "label": "Trust badge 2", "default": "Secure checkout" },
+    { "type": "text", "id": "trust_3", "label": "Trust badge 3", "default": "Easy returns" }
+  ],
+  "blocks": [ { "type": "tab", "name": "Accordion tab", "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "Shipping & Returns" },
+    { "type": "richtext", "id": "content", "label": "Content" }
+  ] } ],
+  "presets": [ { "name": "Product" } ]
+}
+{% endschema %}

@@ -1,0 +1,37 @@
+<div class="drawer__head">
+  <h2>{{ 'cart.title' | t }}</h2>
+  <button type="button" class="icon-btn" data-cart-close aria-label="{{ 'general.close' | t }}">{% render 'icon', name: 'close' %}</button>
+</div>
+<div class="drawer__body">
+  {%- if cart.item_count == 0 -%}
+    <p>{{ 'cart.empty' | t }}</p>
+    <a href="{{ routes.all_products_collection_url }}" class="btn">{{ 'cart.continue' | t }}</a>
+  {%- else -%}
+    {%- for item in cart.items -%}
+      <div class="line">
+        <a class="line__img" href="{{ item.url }}">{% if item.image %}{{ item.image | image_url: width: 160 | image_tag: loading: 'lazy', alt: item.image.alt | default: item.product.title }}{% endif %}</a>
+        <div>
+          <a href="{{ item.url }}" class="line__title">{{ item.product.title }}</a>
+          {%- unless item.product.has_only_default_variant -%}<div class="rating" style="letter-spacing:0">{{ item.variant.title }}</div>{%- endunless -%}
+          <div class="line__meta">
+            <div class="qty">
+              <button type="button" data-line-qty="{{ item.quantity | minus: 1 }}" data-line="{{ forloop.index }}" aria-label="-">&minus;</button>
+              <input type="number" value="{{ item.quantity }}" min="0" data-line-input data-line="{{ forloop.index }}" aria-label="{{ 'products.quantity' | t }}">
+              <button type="button" data-line-qty="{{ item.quantity | plus: 1 }}" data-line="{{ forloop.index }}" aria-label="+">+</button>
+            </div>
+            <strong class="card__price">{{ item.final_line_price | money }}</strong>
+          </div>
+          <button type="button" class="link-btn" data-line-qty="0" data-line="{{ forloop.index }}">{{ 'cart.remove' | t }}</button>
+        </div>
+      </div>
+    {%- endfor -%}
+  {%- endif -%}
+</div>
+{%- if cart.item_count > 0 -%}
+<div class="drawer__foot">
+  <div class="subtotal"><span>{{ 'cart.subtotal' | t }}</span><span>{{ cart.total_price | money }}</span></div>
+  <p style="font-size:.85rem;margin:0 0 1rem">{{ 'cart.taxes_note' | t }}</p>
+  <a href="/checkout" class="btn btn--block">{{ 'cart.checkout' | t }}</a>
+</div>
+{%- endif -%}
+{% schema %}{ "name": "Cart drawer" }{% endschema %}

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="{{ settings.color_green }}">
+  <link rel="canonical" href="{{ canonical_url }}">
+  <title>{{ page_title }}{% if current_tags %} &ndash; {{ 'general.tagged' | t: tags: current_tags | join: ', ' }}{% endif %}{% unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless %}</title>
+  {% if page_description %}<meta name="description" content="{{ page_description | escape }}">{% endif %}
+  {% render 'css-variables' %}
+  {{ settings.heading_font | font_face: font_display: 'swap' }}
+  {{ settings.body_font | font_face: font_display: 'swap' }}
+  {{ 'theme.css' | asset_url | stylesheet_tag }}
+  {{ content_for_header }}
+</head>
+<body class="template-{{ template.name | handle }}{% if settings.card_float %} has-float{% endif %}">
+  <a class="skip-link" href="#MainContent">{{ 'general.skip' | t }}</a>
+  {% sections 'header-group' %}
+  <main id="MainContent" tabindex="-1">{{ content_for_layout }}</main>
+  {% sections 'footer-group' %}
+  <div class="drawer-overlay" data-cart-close></div>
+  <aside class="drawer" id="CartDrawer" role="dialog" aria-modal="true" aria-label="{{ 'cart.title' | t }}" aria-hidden="true">
+    {% section 'cart-drawer' %}
+  </aside>
+  <script src="{{ 'theme.js' | asset_url }}" defer></script>
+</body>
+</html>

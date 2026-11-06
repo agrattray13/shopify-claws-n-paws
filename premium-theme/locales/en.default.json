@@ -1,0 +1,56 @@
+{
+  "general": {
+    "skip": "Skip to content",
+    "tagged": "Tagged \"{{ tags }}\"",
+    "search": "Search",
+    "account": "Account",
+    "cart": "Cart",
+    "menu": "Menu",
+    "close": "Close",
+    "sale": "Sale",
+    "sold_out": "Sold out",
+    "from": "From"
+  },
+  "cart": {
+    "title": "Your cart",
+    "empty": "Your cart is empty",
+    "continue": "Continue shopping",
+    "subtotal": "Subtotal",
+    "checkout": "Check out",
+    "remove": "Remove",
+    "taxes_note": "Taxes and shipping calculated at checkout"
+  },
+  "products": {
+    "add_to_cart": "Add to Cart",
+    "quick_add": "Quick Add",
+    "quantity": "Quantity",
+    "you_may_also_like": "You May Also Like"
+  },
+  "contact": {
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "message": "Message",
+    "send": "Send Message",
+    "success": "Thanks for getting in touch! We'll reply soon."
+  },
+  "newsletter": {
+    "email": "Email address",
+    "subscribe": "Subscribe",
+    "success": "Thanks for subscribing!"
+  },
+  "customer": {
+    "login": "Log in",
+    "register": "Create account",
+    "logout": "Log out",
+    "email": "Email",
+    "password": "Password",
+    "first_name": "First name",
+    "last_name": "Last name",
+    "orders": "Order history",
+    "no_orders": "You haven't placed any orders yet."
+  },
+  "search": { "title": "Search", "no_results": "No results found for \"{{ terms }}\"" },
+  "blog": { "read_more": "Read more" },
+  "404": { "title": "Page not found", "text": "The page you're looking for doesn't exist.", "cta": "Back to home" }
+}

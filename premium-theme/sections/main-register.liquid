@@ -1,0 +1,12 @@
+<section class="section"><div class="page-width" style="max-width:28rem">
+  <h1>{{ 'customer.register' | t }}</h1>
+  {%- form 'create_customer' -%}
+    {%- if form.errors -%}<div class="error" role="alert">{{ form.errors | default_errors }}</div>{%- endif -%}
+    <div class="field"><label for="CR-fn">{{ 'customer.first_name' | t }}</label><input id="CR-fn" name="customer[first_name]" autocomplete="given-name"></div>
+    <div class="field"><label for="CR-ln">{{ 'customer.last_name' | t }}</label><input id="CR-ln" name="customer[last_name]" autocomplete="family-name"></div>
+    <div class="field"><label for="CR-email">{{ 'customer.email' | t }}</label><input id="CR-email" type="email" name="customer[email]" autocomplete="email" required></div>
+    <div class="field"><label for="CR-pw">{{ 'customer.password' | t }}</label><input id="CR-pw" type="password" name="customer[password]" autocomplete="new-password" required></div>
+    <button class="btn" type="submit">{{ 'customer.register' | t }}</button>
+  {%- endform -%}
+</div></section>
+{% schema %}{ "name": "Register" }{% endschema %}

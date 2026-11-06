@@ -1,0 +1,30 @@
+{%- comment -%} Params: product, index (optional), lazy (optional) {%- endcomment -%}
+{%- if product -%}
+<div class="card reveal">
+  {%- if product.available == false -%}<span class="badge badge--out">{{ 'general.sold_out' | t }}</span>
+  {%- elsif product.compare_at_price > product.price -%}<span class="badge">{{ 'general.sale' | t }}</span>{%- endif -%}
+  <a href="{{ product.url }}" class="card__media" tabindex="-1" aria-hidden="true">
+    {%- if product.featured_image -%}
+      {{ product.featured_image | image_url: width: 600 | image_tag: widths: '240, 360, 480, 600', sizes: '(min-width: 1050px) 280px, (min-width: 750px) 30vw, 45vw', loading: 'lazy', alt: product.featured_image.alt | default: product.title }}
+    {%- else -%}{{ 'product-1' | placeholder_svg_tag }}{%- endif -%}
+  </a>
+  <h3 class="card__title"><a href="{{ product.url }}">{{ product.title }}</a></h3>
+  {%- if settings.show_rating and product.metafields.reviews.rating.value -%}
+    {%- assign r = product.metafields.reviews.rating.value.rating | round -%}
+    <div class="rating" role="img" aria-label="{{ product.metafields.reviews.rating.value }} / 5">{% for i in (1..5) %}{% if i <= r %}★{% else %}☆{% endif %}{% endfor %}</div>
+  {%- endif -%}
+  <div class="card__price">{{ product.price | money }}{% if product.compare_at_price > product.price %}<s>{{ product.compare_at_price | money }}</s>{% endif %}</div>
+  <div class="card__add">
+    {%- if product.available -%}
+      {%- if product.variants.size == 1 -%}
+        <form method="post" action="/cart/add" data-ajax-cart>
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+          <button type="submit" class="btn btn--block">{{ 'products.add_to_cart' | t }}</button>
+        </form>
+      {%- else -%}
+        <a href="{{ product.url }}" class="btn btn--block">{{ 'products.quick_add' | t }}</a>
+      {%- endif -%}
+    {%- else -%}<span class="btn btn--block" aria-disabled="true" style="opacity:.55">{{ 'general.sold_out' | t }}</span>{%- endif -%}
+  </div>
+</div>
+{%- endif -%}

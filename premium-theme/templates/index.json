@@ -1,0 +1,22 @@
+{
+  "sections": {
+    "hero": { "type": "hero-slideshow", "blocks": { "s1": { "type": "slide" }, "s2": { "type": "slide" }, "s3": { "type": "slide" } }, "block_order": ["s1", "s2", "s3"], "settings": {} },
+    "categories": { "type": "category-circles", "blocks": {
+      "c1": { "type": "category", "settings": { "label": "Dogs" } }, "c2": { "type": "category", "settings": { "label": "Cats" } },
+      "c3": { "type": "category", "settings": { "label": "Toys" } }, "c4": { "type": "category", "settings": { "label": "Treats" } },
+      "c5": { "type": "category", "settings": { "label": "Beds" } }, "c6": { "type": "category", "settings": { "label": "Accessories" } } },
+      "block_order": ["c1", "c2", "c3", "c4", "c5", "c6"], "settings": {} },
+    "featured": { "type": "featured-collection", "settings": { "heading": "Featured Products" } },
+    "story": { "type": "image-with-text", "settings": {} },
+    "benefits": { "type": "benefits", "blocks": {
+      "b1": { "type": "benefit" },
+      "b2": { "type": "benefit", "settings": { "icon": "shield", "title": "Quality Guaranteed", "text": "Built to last" } },
+      "b3": { "type": "benefit", "settings": { "icon": "heart", "title": "Vet Approved", "text": "Safe for your pet" } },
+      "b4": { "type": "benefit", "settings": { "icon": "return", "title": "Easy Returns", "text": "30-day returns" } } },
+      "block_order": ["b1", "b2", "b3", "b4"], "settings": {} },
+    "bestsellers": { "type": "featured-collection", "settings": { "heading": "Best Sellers", "background": "tan" } },
+    "testimonials": { "type": "testimonials", "blocks": { "t1": { "type": "testimonial" }, "t2": { "type": "testimonial", "settings": { "quote": "Our cat adores everything we've ordered.", "author": "Maria S." } }, "t3": { "type": "testimonial", "settings": { "quote": "Gorgeous quality and fast shipping.", "author": "James T." } } }, "block_order": ["t1", "t2", "t3"], "settings": {} },
+    "newsletter": { "type": "newsletter", "settings": {} }
+  },
+  "order": ["hero", "categories", "featured", "story", "benefits", "bestsellers", "testimonials", "newsletter"]
+}

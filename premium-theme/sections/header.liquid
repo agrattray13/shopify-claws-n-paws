@@ -1,0 +1,30 @@
+<header class="site-header">
+  <div class="page-width header__inner">
+    <button type="button" class="icon-btn menu-toggle" data-toggle="MainNav" aria-expanded="false" aria-controls="MainNav" aria-label="{{ 'general.menu' | t }}">{% render 'icon', name: 'menu' %}</button>
+    <a href="{{ routes.root_url }}" class="header__logo">
+      {%- if section.settings.logo != blank -%}{{ section.settings.logo | image_url: width: 300 | image_tag: alt: shop.name, loading: 'eager' }}{%- else -%}{{ shop.name }}{%- endif -%}
+    </a>
+    <nav class="header__nav" id="MainNav" aria-label="Main">
+      <ul>
+        {%- for link in linklists[section.settings.menu].links -%}<li><a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a></li>{%- endfor -%}
+      </ul>
+    </nav>
+    <div class="header__icons">
+      <button type="button" class="icon-btn" data-toggle="SearchPanel" aria-expanded="false" aria-controls="SearchPanel" aria-label="{{ 'general.search' | t }}">{% render 'icon', name: 'search' %}</button>
+      <a href="{{ routes.account_url }}" class="icon-btn" aria-label="{{ 'general.account' | t }}">{% render 'icon', name: 'user' %}</a>
+      <a href="{{ routes.cart_url }}" class="icon-btn" data-cart-open aria-label="{{ 'general.cart' | t }}">{% render 'icon', name: 'cart' %}<span class="cart-count" data-cart-count{% if cart.item_count == 0 %} hidden{% endif %}>{{ cart.item_count }}</span></a>
+    </div>
+  </div>
+  <div class="search-panel" id="SearchPanel">
+    <form action="{{ routes.search_url }}" method="get" role="search" class="page-width">
+      <label class="visually-hidden" for="HeaderSearch">{{ 'general.search' | t }}</label>
+      <input id="HeaderSearch" type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'general.search' | t }}">
+    </form>
+  </div>
+</header>
+{% schema %}
+{ "name": "Header", "settings": [
+  { "type": "image_picker", "id": "logo", "label": "Logo" },
+  { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" }
+] }
+{% endschema %}

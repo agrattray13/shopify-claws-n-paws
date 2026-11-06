@@ -1,0 +1,26 @@
+<section class="section{% if section.settings.background == 'tan' %} bg-tan{% endif %}"><div class="page-width">
+  <div class="split{% if section.settings.reverse %} split--reverse{% endif %}">
+    <div class="split__media img-zoom reveal">
+      {%- if section.settings.image != blank -%}{{ section.settings.image | image_url: width: 1200 | image_tag: widths: '500, 800, 1200', sizes: '(min-width: 850px) 50vw, 100vw', loading: 'lazy', alt: section.settings.image.alt | default: section.settings.heading }}{%- else -%}{{ 'image' | placeholder_svg_tag }}{%- endif -%}
+    </div>
+    <div class="reveal">
+      <h2>{{ section.settings.heading }}</h2>
+      <div class="rte">{{ section.settings.text }}</div>
+      {%- if section.settings.button_label != blank -%}<a class="btn" href="{{ section.settings.button_link | default: '#' }}">{{ section.settings.button_label }}</a>{%- endif -%}
+    </div>
+  </div>
+</div></section>
+{% schema %}
+{ "name": "Image with text",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Why choose Claws & Paws" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>We hand-select every product for quality, safety and comfort.</p>" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Our story" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "select", "id": "background", "label": "Background", "options": [ { "value": "tan", "label": "Tan" }, { "value": "cream", "label": "Cream" } ], "default": "tan" },
+    { "type": "checkbox", "id": "reverse", "label": "Image on the right", "default": false }
+  ],
+  "presets": [ { "name": "Image with text" } ]
+}
+{% endschema %}

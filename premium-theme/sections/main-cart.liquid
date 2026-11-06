@@ -1,0 +1,28 @@
+<section class="section cart-page"><div class="page-width" style="max-width:900px">
+  <h1>{{ 'cart.title' | t }}</h1>
+  {%- if cart.item_count == 0 -%}
+    <p>{{ 'cart.empty' | t }}</p><a class="btn" href="{{ routes.all_products_collection_url }}">{{ 'cart.continue' | t }}</a>
+  {%- else -%}
+    <form action="{{ routes.cart_url }}" method="post">
+      {%- for item in cart.items -%}
+        <div class="line">
+          <a class="line__img" style="width:96px;height:96px" href="{{ item.url }}">{% if item.image %}{{ item.image | image_url: width: 200 | image_tag: loading: 'lazy', alt: item.product.title }}{% endif %}</a>
+          <div>
+            <a href="{{ item.url }}" class="line__title">{{ item.product.title }}</a>
+            {%- unless item.product.has_only_default_variant -%}<div>{{ item.variant.title }}</div>{%- endunless -%}
+            <div class="line__meta">
+              <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" style="width:5rem" aria-label="{{ 'products.quantity' | t }}">
+              <strong class="card__price">{{ item.final_line_price | money }}</strong>
+            </div>
+            <a href="{{ item.url_to_remove }}">{{ 'cart.remove' | t }}</a>
+          </div>
+        </div>
+      {%- endfor -%}
+      <div class="subtotal"><span>{{ 'cart.subtotal' | t }}</span><span>{{ cart.total_price | money }}</span></div>
+      <p>{{ 'cart.taxes_note' | t }}</p>
+      <button type="submit" name="update" class="btn btn--light" style="background:var(--c-tan);color:var(--c-brown)">Update</button>
+      <button type="submit" name="checkout" class="btn">{{ 'cart.checkout' | t }}</button>
+    </form>
+  {%- endif -%}
+</div></section>
+{% schema %}{ "name": "Cart page" }{% endschema %}

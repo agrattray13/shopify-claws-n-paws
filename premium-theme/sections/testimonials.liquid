@@ -1,0 +1,24 @@
+<section class="section bg-tan"><div class="page-width">
+  {%- if section.settings.heading != blank -%}<h2 class="section-heading">{{ section.settings.heading }}</h2>{%- endif -%}
+  <div class="testimonials" data-testimonials data-seconds="{{ section.settings.seconds }}" aria-roledescription="carousel" aria-live="off">
+    {%- for block in section.blocks -%}
+      <figure class="testimonial" style="margin:0" {{ block.shopify_attributes }}>
+        <blockquote>&ldquo;{{ block.settings.quote }}&rdquo;</blockquote>
+        <figcaption><strong>{{ block.settings.author }}</strong></figcaption>
+      </figure>
+    {%- endfor -%}
+  </div>
+</div></section>
+{% schema %}
+{ "name": "Testimonials",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Happy pets, happy people" },
+    { "type": "range", "id": "seconds", "label": "Seconds per testimonial", "min": 4, "max": 15, "step": 1, "default": 7 }
+  ],
+  "blocks": [ { "type": "testimonial", "name": "Testimonial", "settings": [
+    { "type": "textarea", "id": "quote", "label": "Quote", "default": "The best quality products we've found for our pup." },
+    { "type": "text", "id": "author", "label": "Author", "default": "Happy Customer" }
+  ] } ],
+  "presets": [ { "name": "Testimonials", "blocks": [ { "type": "testimonial" }, { "type": "testimonial" }, { "type": "testimonial" } ] } ]
+}
+{% endschema %}

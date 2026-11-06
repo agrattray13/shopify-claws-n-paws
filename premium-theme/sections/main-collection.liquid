@@ -1,0 +1,48 @@
+<div class="page-banner{% if collection.image %} page-banner--image{% endif %}">
+  {%- if collection.image -%}{{ collection.image | image_url: width: 2000 | image_tag: loading: 'eager', alt: '' }}{%- endif -%}
+  <div class="page-width"><h1>{{ collection.title }}</h1>{%- if collection.description != blank -%}<div class="rte">{{ collection.description }}</div>{%- endif -%}</div>
+</div>
+<section class="section"><div class="page-width">
+  <form id="CollectionFilters" method="get" class="toolbar">
+    {%- if section.settings.enable_filtering and collection.filters != empty -%}
+      <div class="filters">
+        {%- for filter in collection.filters -%}
+          <details class="filter-group"><summary>{{ filter.label }}</summary>
+            {%- case filter.type -%}
+              {%- when 'price_range' -%}
+                <div class="field"><label for="min-{{ forloop.index }}">From</label><input id="min-{{ forloop.index }}" type="number" name="{{ filter.min_value.param_name }}" value="{{ filter.min_value.value }}" min="0" placeholder="0"></div>
+                <div class="field"><label for="max-{{ forloop.index }}">To</label><input id="max-{{ forloop.index }}" type="number" name="{{ filter.max_value.param_name }}" value="{{ filter.max_value.value }}" min="0" placeholder="{{ filter.range_max | money_without_currency }}"></div>
+              {%- else -%}
+                <ul>{%- for v in filter.values -%}<li><label style="font-weight:400"><input type="checkbox" name="{{ v.param_name }}" value="{{ v.value }}" {% if v.active %}checked{% endif %} {% if v.count == 0 and v.active == false %}disabled{% endif %}>{{ v.label }} ({{ v.count }})</label></li>{%- endfor -%}</ul>
+            {%- endcase -%}
+          </details>
+        {%- endfor -%}
+        <button type="submit" class="btn">Apply</button>
+      </div>
+    {%- endif -%}
+    {%- if section.settings.enable_sorting -%}
+      <div><label for="SortBy">Sort by</label>
+        <select id="SortBy" name="sort_by" onchange="this.form.submit()">
+          {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+          {%- for o in collection.sort_options -%}<option value="{{ o.value }}" {% if o.value == sort_by %}selected{% endif %}>{{ o.name }}</option>{%- endfor -%}
+        </select>
+      </div>
+    {%- endif -%}
+  </form>
+  {%- paginate collection.products by section.settings.per_page -%}
+    {%- if collection.products.size == 0 -%}<p class="text-center">No products found.</p>{%- endif -%}
+    <div class="grid" style="--cols: 4; --cols-t: 3; --cols-m: 2">
+      {%- for product in collection.products -%}{% render 'product-card', product: product %}{%- endfor -%}
+    </div>
+    {%- render 'pagination', paginate: paginate -%}
+  {%- endpaginate -%}
+</div></section>
+{% schema %}
+{ "name": "Collection",
+  "settings": [
+    { "type": "range", "id": "per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 24 },
+    { "type": "checkbox", "id": "enable_filtering", "label": "Enable filtering", "default": true },
+    { "type": "checkbox", "id": "enable_sorting", "label": "Enable sorting", "default": true }
+  ]
+}
+{% endschema %}

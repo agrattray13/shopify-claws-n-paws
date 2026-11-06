@@ -1,0 +1,9 @@
+<section class="section"><div class="page-width">
+  <h1 class="section-heading">{{ page_title }}</h1>
+  <div class="circles">
+    {%- for c in collections -%}
+      <a href="{{ c.url }}" class="circle-item reveal"><div class="circle-item__img">{%- if c.image -%}{{ c.image | image_url: width: 400 | image_tag: loading: 'lazy', alt: c.title }}{%- else -%}{{ 'collection-1' | placeholder_svg_tag }}{%- endif -%}</div><span>{{ c.title }}</span></a>
+    {%- endfor -%}
+  </div>
+</div></section>
+{% schema %}{ "name": "Collections list" }{% endschema %}
